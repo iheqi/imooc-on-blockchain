@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "ganache-cli": "^6.3.0",
+    "mocha": "^6.0.1",
     "onchange": "^5.2.0",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
@@ -18,7 +20,8 @@
     "precompile": "rimraf src/compiled/*",
     "compile": "node scripts/compile.js",
     "precompile:w": "npm run compile",
-    "compile:w": "onchange \"contracts/*.sol\" -- npm run compile"
+    "compile:w": "onchange \"contracts/*.sol\" -- npm run compile",
+    "test:w": "mocha --watch"
   },
   "eslintConfig": {
     "extends": "react-app"

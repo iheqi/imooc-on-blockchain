@@ -24,10 +24,14 @@ const input = {
   }
 }
 var output = JSON.parse(solc.compile(JSON.stringify(input)));
-// console.log(output.contracts["Imooc.sol"].CourseList);
 
-Object.keys(output.contracts).forEach(name => {
-  const filePath = path.resolve(__dirname, `../src/compiled/${name}.json`);
-  fs.writeFileSync(filePath, JSON.stringify(output.contracts[name]));
-  console.log(`${name}.json bingo!`);
-});
+if (Array.isArray(output.errors) && output.errors.length > 0) {
+  console.error(output.errors[0]);
+} else {
+  Object.keys(output.contracts).forEach(name => {
+    const filePath = path.resolve(__dirname, `../src/compiled/${name}.json`);
+    fs.writeFileSync(filePath, JSON.stringify(output.contracts[name]));
+    console.log(`${name}.json bingo!`);
+  });
+}
+

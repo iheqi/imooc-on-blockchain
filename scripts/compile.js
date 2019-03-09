@@ -6,8 +6,6 @@ const contractPath = path.resolve(__dirname, '../contracts/Imooc.sol');
 
 const source = fs.readFileSync(contractPath, 'utf-8');
 
-// const ret = solc.compile(source);
-
 const input = {
   language: 'Solidity',
   sources: {

@@ -7,19 +7,26 @@ contract CourseList {
         ceo = msg.sender;
     }
 
-    function createCourse(string memory _name) public {
+
+    function createCourse(string memory _name) public returns (address) {
         address newCourse = address(new Course(_name));
         courses.push(newCourse);
+        return newCourse;
     }
 
-    function getCourse() public view returns (address[] memory) {
+    function getCourses() public view returns (address[] memory) {
         return courses;
     }
 }
 
 contract Course {
     string public name;
+
     constructor(string memory _name) public {
         name = _name;
+    }
+
+    function getName() public view returns (string memory) {
+        return name;
     }
 }

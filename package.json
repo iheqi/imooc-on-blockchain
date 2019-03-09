@@ -22,7 +22,10 @@
     "compile": "node scripts/compile.js",
     "precompile:w": "npm run compile",
     "compile:w": "onchange \"contracts/*.sol\" -- npm run compile",
-    "test:w": "mocha --watch"
+    "test:w": "mocha --watch",
+    "rebuild": "npm run compile && mocha",
+    "prerebuild:w": "npm run rebuild",
+    "rebuild:w": "onchange 'contracts/*.sol' 'test/.*js' -- npm run rebuild"
   },
   "eslintConfig": {
     "extends": "react-app"

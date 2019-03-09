@@ -9,6 +9,7 @@ const Imooc = require(path.resolve(__dirname, '../src/compiled/Imooc.json'));
 
 let accounts;
 let courseList; 
+let course;
 
 describe('测试课程', () => {
   before(async () => {
@@ -26,20 +27,27 @@ describe('测试课程', () => {
   });
 
   it('合约部署成功', async () => {
+    console.log(courseList.options.address);
     assert.ok(courseList.options.address);
   });
 
   it('测试添加课程', async () => {
-      await courseList.methods.createCourse('vue course').send({
-        from: accounts[0],
-        gas: 5000000
-      });
-      await courseList.methods.createCourse('react course').send({
-        from: accounts[0],
-        gas: 5000000
-      });    
-      const courses = await courseList.methods.getCourses().call();
-      console.log(typeof courses, courses);
+    await courseList.methods.createCourse('vue course').send({
+      from: accounts[0],
+      gas: 5000000
+    });
+    // await courseList.methods.createCourse('react course').send({
+    //   from: accounts[0],
+    //   gas: 5000000
+    // });    
+    course = await courseList.methods.getCourses().call();
+    console.log(course);
+  });
+
+  it('获取课程的属性', async () => {
+    myCourse = await new web3.eth.Contract(Imooc.Course.abi, course);
+    let name = await myCourse.methods.name().call()
+    console.log(name);
   });
   
 });

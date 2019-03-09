@@ -7,11 +7,9 @@ contract CourseList {
         ceo = msg.sender;
     }
 
-
     function createCourse(string memory _name) public returns (address) {
         address newCourse = address(new Course(_name));
         courses.push(newCourse);
-        return newCourse;
     }
 
     function getCourses() public view returns (address[] memory) {

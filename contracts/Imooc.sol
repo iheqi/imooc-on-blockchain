@@ -7,8 +7,24 @@ contract CourseList {
         ceo = msg.sender;
     }
 
-    function createCourse(string memory _name) public returns (address) {
-        address newCourse = address(new Course(_name));
+    function createCourse(
+        string memory name,
+        string memory content,
+        uint price,
+        uint fundingPrice,
+        uint target,
+        string memory img
+    ) public returns (address) {
+        address newCourse = address(
+            new Course(
+                msg.sender,
+                name, 
+                content, 
+                price, 
+                fundingPrice, 
+                target, 
+                img
+            ));
         courses.push(newCourse);
     }
 
@@ -35,10 +51,36 @@ contract CourseList {
 }
 
 contract Course {
+    address public owner;
     string public name;
+    string public content;
+    uint public price;
+    uint public fundingPrice;
+    uint public target;
+    string public img;
+    string public video;
+    bool public isOnline;
+    uint public count; 
 
-    constructor(string memory _name) public {
+    constructor(
+        address _owner, 
+        string memory _name, 
+        string memory _content, 
+        uint _price,
+        uint _fundingPrice,
+        uint _target,
+        string memory _img
+    ) public {
+        owner = _owner;
         name = _name;
+        content = _content;
+        price = _price;
+        fundingPrice = _fundingPrice;
+        target = _target;
+        img = _img;
+        video = "";
+        isOnline = false;
+        count = 0; 
     }
 
     function getName() public view returns (string memory) {

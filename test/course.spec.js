@@ -9,12 +9,11 @@ const Imooc = require(path.resolve(__dirname, '../src/compiled/Imooc.json'));
 
 let accounts;
 let courseList; 
-let course;
+let courses;
 
 describe('测试课程', () => {
   before(async () => {
     accounts = await web3.eth.getAccounts();
-    // console.log(accounts);
     courseList = await new web3.eth.Contract(Imooc.CourseList.abi, accounts[0]);
 
     await courseList.deploy({
@@ -36,18 +35,44 @@ describe('测试课程', () => {
       from: accounts[0],
       gas: 5000000
     });
-    // await courseList.methods.createCourse('react course').send({
-    //   from: accounts[0],
-    //   gas: 5000000
-    // });    
-    course = await courseList.methods.getCourses().call();
-    console.log(course);
+  
+    courses = await courseList.methods.getCourses().call();
+    console.log(courses);
   });
 
   it('获取课程的属性', async () => {
-    myCourse = await new web3.eth.Contract(Imooc.Course.abi, course);
-    let name = await myCourse.methods.name().call()
+    const vueCourse = await new web3.eth.Contract(Imooc.Course.abi, courses.split(',')[0]);
+    let name = await vueCourse.methods.name().call()
     console.log(name);
   });
   
+  it('删除课程', async () => {
+    await courseList.methods.createCourse('react course').send({
+      from: accounts[0],
+      gas: 5000000
+    });  
+    courses = await courseList.methods.getCourses().call();
+    console.log(courses);
+    try {
+      await courseList.methods.removeCourse(0).send({
+        from: accounts[0],
+        gas: 5000000
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
+    courses = await courseList.methods.getCourses().call();
+    console.log(courses);
+  });
+
+  it('是否ceo', async () => {
+    const isCeo1 = await courseList.methods.isCeo().call({
+      from: accounts[0]
+    });
+    const isCeo2 = await courseList.methods.isCeo().call({
+      from: accounts[1]
+    });    
+    console.log(isCeo1, isCeo2);
+  });
 });

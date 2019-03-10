@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
 contract CourseList {
-    address public ceo;
+    address payable public ceo;
     address[] public courses;
     constructor() public {
         ceo = msg.sender;
@@ -17,6 +17,7 @@ contract CourseList {
     ) public returns (address) {
         address newCourse = address(
             new Course(
+                ceo,
                 msg.sender,
                 name, 
                 content, 
@@ -51,7 +52,8 @@ contract CourseList {
 }
 
 contract Course {
-    address public owner;
+    address payable public ceo;
+    address payable public owner;
     string public name;
     string public content;
     uint public price;
@@ -61,9 +63,11 @@ contract Course {
     string public video;
     bool public isOnline;
     uint public count; 
+    mapping (address => uint) users;
 
     constructor(
-        address _owner, 
+        address payable _ceo,
+        address payable _owner, 
         string memory _name, 
         string memory _content, 
         uint _price,
@@ -71,6 +75,7 @@ contract Course {
         uint _target,
         string memory _img
     ) public {
+        ceo = _ceo;
         owner = _owner;
         name = _name;
         content = _content;
@@ -83,7 +88,54 @@ contract Course {
         count = 0; 
     }
 
-    function getName() public view returns (string memory) {
-        return name;
+    function addVideo(string memory _video) public {
+        require(msg.sender == owner, "必须是讲师才能添加课程");
+        require(isOnline, "课程必须已经上线");
+        video = _video;
+    }
+
+    function buy() public payable {
+        require(users[msg.sender] == 0, "用户尚未购买");
+
+        if (isOnline) {
+            require(msg.value == price, "上线后必须以上线价格购买");
+        } else {
+            require(msg.value == fundingPrice, "未上线前用众筹价");
+        }
+
+        users[msg.sender] = msg.value;
+        count++;
+
+        if (target <= fundingPrice * count) {
+            if (isOnline) {
+                uint value = msg.value;
+                ceo.transfer(value / 10);
+                owner.transfer(value - (value / 10));
+            } else { // 还没上线，第一次超出
+                isOnline = true;
+                owner.transfer(fundingPrice * count);
+            }
+        }
+    }
+
+    function getDetail() public view returns (string memory, string memory, uint, uint, uint, string memory, string memory, bool, uint, uint) {
+        uint role = 2;
+        if (msg.sender == owner) {
+            role = 0;
+        } else if (users[msg.sender] != 0) {
+            role = 1;
+        }
+        return (
+            name,
+            content,
+            price,
+            fundingPrice,
+            target,
+            img,
+            video,
+            isOnline,
+            count,  
+            role
+        );
     }
 }

@@ -63,7 +63,7 @@ contract Course {
     string public video;
     bool public isOnline;
     uint public count; 
-    mapping (address => uint) users;
+    mapping (address => uint) public users;
 
     constructor(
         address payable _ceo,
@@ -95,7 +95,7 @@ contract Course {
     }
 
     function buy() public payable {
-        require(users[msg.sender] == 0, "用户尚未购买");
+        require(users[msg.sender] == 0, "不可重复购买");
 
         if (isOnline) {
             require(msg.value == price, "上线后必须以上线价格购买");

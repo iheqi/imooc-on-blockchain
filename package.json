@@ -12,6 +12,7 @@
     "react-scripts": "2.1.5",
     "rimraf": "^2.6.3",
     "solc": "^0.5.0",
+    "truffle-hdwallet-provider": "^1.0.5",
     "web3": "^1.0.0-beta.48"
   },
   "scripts": {
@@ -19,6 +20,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "deploy": "node scripts/deploy.js",
     "precompile": "rimraf src/compiled/*",
     "compile": "node scripts/compile.js",
     "precompile:w": "npm run compile",

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Row, Col, Form, Input, Upload } from 'antd';
+import { Row, Col, Form, Input, Upload, Button } from 'antd';
 import FormItem from 'antd/lib/form/FormItem';
+import { saveImageToIpfs } from '../config';
 
 class Create extends React.Component {
   constructor(props) {
@@ -10,13 +11,18 @@ class Create extends React.Component {
 
   handleSubmit = () => {
 
-  };
+  }
+
+  handleUpload = async (file) => {
+    const hash = saveImageToIpfs(file);
+    console.log(hash);
+  }
 
   onChange = (e) => {
     this.setState({
       [e.target.name]: e.target.value
     });
-  };
+  }
 
   render() {
     return (
@@ -37,7 +43,9 @@ class Create extends React.Component {
               <Input name="target" onChange={this.onChange}></Input>
             </FormItem>
             <FormItem label="课程封面">
-              <Upload>Upload</Upload>
+              <Upload beforeUpload="handleUpload" showUploadList={false}>
+                <Button>上传图片</Button>
+              </Upload>
             </FormItem>            
             <FormItem label="众筹价格">
               <Input name="fundingPrice" onChange={this.onChange}></Input>

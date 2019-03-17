@@ -3,11 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "antd": "^3.15.0",
+    "babel-plugin-import": "^1.11.0",
     "bignumber.js": "^8.1.1",
+    "customize-cra": "^0.2.12",
     "ganache-cli": "^6.3.0",
     "mocha": "^6.0.1",
     "onchange": "^5.2.0",
     "react": "^16.8.3",
+    "react-app-rewired": "^2.1.1",
     "react-dom": "^16.8.3",
     "react-scripts": "2.1.5",
     "rimraf": "^2.6.3",
@@ -16,9 +20,9 @@
     "web3": "^1.0.0-beta.48"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "deploy": "node scripts/deploy.js",
     "precompile": "rimraf src/compiled/*",

@@ -6,6 +6,9 @@ import MenuItem from 'antd/lib/menu/MenuItem';
 const Header = Layout.Header;
 
 class HeadComp extends React.Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
     return (
       <Header>

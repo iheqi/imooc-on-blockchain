@@ -1,21 +1,32 @@
 import React from 'react';
 import { Row, Col, Form, Input, Upload, Button } from 'antd';
 import FormItem from 'antd/lib/form/FormItem';
-import { saveImageToIpfs } from '../config';
+import { saveImageToIpfs, ipfsPrefix } from '../config';
 
 class Create extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {
+      name: '',
+      content: '',
+      img: '',
+      target: '',
+      fundingPrice: '',
+      price: ''
+    }
   }
 
-  handleSubmit = () => {
-
+  handleSubmit = (e) => {
+    console.log(this.state);
+    e.preventDefault();
   }
 
   handleUpload = async (file) => {
     const hash = await saveImageToIpfs(file);
     console.log(hash);
+    this.setState({
+      img: hash
+    });
     return false;
   }
 
@@ -40,14 +51,19 @@ class Create extends React.Component {
             <FormItem label="课程详情">
               <Input.TextArea row={6} name="content" onChange={this.onChange}></Input.TextArea>
             </FormItem>  
-            <FormItem label="众筹目标">
-              <Input name="target" onChange={this.onChange}></Input>
-            </FormItem>
             <FormItem label="课程封面">
               <Upload beforeUpload={this.handleUpload} showUploadList={false}>
-                <Button>上传图片</Button>
+                {
+                  this.state.img ? 
+                    <img height="100px" src={`${ipfsPrefix}${this.state.img}`}/>
+                      :
+                    <Button>上传图片</Button>
+                }
               </Upload>
-            </FormItem>            
+            </FormItem>  
+            <FormItem label="众筹目标">
+              <Input name="target" onChange={this.onChange}></Input>
+            </FormItem>          
             <FormItem label="众筹价格">
               <Input name="fundingPrice" onChange={this.onChange}></Input>
             </FormItem>
@@ -55,6 +71,9 @@ class Create extends React.Component {
               <Input name="price" onChange={this.onChange}></Input>
             </FormItem>
 
+            <FormItem>
+              <Button htmlType="submit">添加课程</Button>
+            </FormItem>
           </Form>
         </Col>
       </Row>

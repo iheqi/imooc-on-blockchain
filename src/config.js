@@ -1,6 +1,6 @@
-import ipfsApi from 'ipfs-api';
+import ipfsClient from 'ipfs-http-client';
 
-let ipfs = ipfsApi("ipfs.infura.io", "5001", {"protocol": "https"});
+let ipfs = ipfsClient("ipfs.infura.io", "5001", { protocol: "https" });
 
 let ipfsPrefix = "https://ipfs.infura.io:5001/ipfs";
 
@@ -10,6 +10,7 @@ function saveImageToIpfs(file) {
     reader.readAsArrayBuffer(file);
     reader.onloadend = async () => {
       const buffer = Buffer.from(reader.result);
+      console.log(reader.result);
       const res = await ipfs.add(buffer); // 上传
       console.log(res);
       resolve(res[0].hash);
@@ -17,4 +18,4 @@ function saveImageToIpfs(file) {
   });
 }
 
-export { ipfs, ipfipfsPrefixsApi, saveImageToIpfs };
+export { ipfs, ipfsPrefix, saveImageToIpfs };

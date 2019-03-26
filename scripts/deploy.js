@@ -19,13 +19,12 @@ const web3 = new Web3(provider);
 
   const courseList = await new web3.eth.Contract(Imooc.CourseList.abi, accounts[0]);
 
-  console.time('合约部署消耗时间');
   const result = await courseList.deploy({
     data: Imooc.CourseList.evm.bytecode.object
-  }).send({
+  })
+  .send({
     from: accounts[0],
     gas: 5000000
   });  
-  console.timeEnd('合约部署消耗时间');
   console.log('合约部署到的地址：', result.options.address);
 })();

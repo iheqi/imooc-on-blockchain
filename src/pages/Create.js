@@ -14,8 +14,9 @@ class Create extends React.Component {
   }
 
   handleUpload = async (file) => {
-    const hash = saveImageToIpfs(file);
+    const hash = await saveImageToIpfs(file);
     console.log(hash);
+    return false;
   }
 
   onChange = (e) => {
@@ -43,7 +44,7 @@ class Create extends React.Component {
               <Input name="target" onChange={this.onChange}></Input>
             </FormItem>
             <FormItem label="课程封面">
-              <Upload beforeUpload="handleUpload" showUploadList={false}>
+              <Upload beforeUpload={this.handleUpload} showUploadList={false}>
                 <Button>上传图片</Button>
               </Upload>
             </FormItem>            

@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route, Link } from "react-router-dom";
 import { Layout } from 'antd';
 import Create from './pages/Create';
+import Course from './pages/Course';
 import Header from './components/Header';
 
 const { Content, Footer } = Layout;
-const Course = () => <span>课程</span>
 const Qa = () => <span>问答区</span>
 
 class App extends Component {

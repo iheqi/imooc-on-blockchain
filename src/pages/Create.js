@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import { Row, Col, Form, Input, Upload, Button } from 'antd';
 import FormItem from 'antd/lib/form/FormItem';
 import { saveImageToIpfs, ipfsPrefix, web3, courseList } from '../config';
@@ -20,16 +21,25 @@ class Create extends React.Component {
     console.log(this.state);
     e.preventDefault();
 
-    const [account] = await web3.eth.getAccounts();
+    const accounts = await web3.eth.getAccounts();
+    console.log('accounts', accounts);
     const arr = [
       this.state.name,
       this.state.content,
-      web3.utils.toWei(this.state.target),
-      web3.utils.toWei(this.state.fundingPrice),
       web3.utils.toWei(this.state.price),
+      web3.utils.toWei(this.state.fundingPrice),
+      web3.utils.toWei(this.state.target),
       this.state.img
     ];
     console.log(arr);
+
+    await courseList.methods.createCourse(...arr).send({
+      from: accounts[0],
+      gas: 5000000
+    });
+    this.setState({
+      toHomePage: true
+    });
   }
 
   handleUpload = async (file) => {
@@ -48,6 +58,9 @@ class Create extends React.Component {
   }
 
   render() {
+    if (this.state.toHomePage) {
+      return <Redirect to="/"></Redirect>
+    }
     return (
       <Row 
         type="flex" 

@@ -1,6 +1,6 @@
 import ipfsClient from 'ipfs-http-client';
 import Web3 from 'web3';
-import { notification } from 'antd';
+import { notification, message } from 'antd';
 import Imooc from '../src/compiled/Imooc.json';
 
 // let ipfs = ipfsClient("ipfs.infura.io", "5001", { protocol: "https" });
@@ -10,18 +10,19 @@ let ipfs = ipfsClient('localhost', '5002', { protocol: 'http' });
 let ipfsPrefix = "http://localhost:5002/ipfs/";
 let web3, accounts, courseList;
 
-web3 = new Web3('ws://localhost:8545');
+// web3 = new Web3('ws://localhost:8545');
 
-// if (window.web3) { // 如果是连接到infura, 则这样连接
-//   web3 = new Web3(window.web3.currentProvider);
-// } else {
-//   notification.error({
-//     message: '没有检测到以太坊插件',
-//     description: '请先安装或激活MetaMask'
-//   });
-// }
+if (window.web3) { // 如果是连接到MetaMask, 则这样连接
+  web3 = new Web3(window.web3.currentProvider);
+} else {
+  notification.error({
+    message: '没有检测到以太坊插件',
+    description: '请先安装或激活MetaMask'
+  });
+}
 
 function saveImageToIpfs(file) {
+  const hide = message.loading('上传中');
   return new Promise((resolve, reject) => {
     let reader = new FileReader();
     reader.readAsArrayBuffer(file);
@@ -29,13 +30,13 @@ function saveImageToIpfs(file) {
       const buffer = Buffer.from(reader.result);
       console.log(reader.result);
       const res = await ipfs.add(buffer); // 上传
-      console.log(res);
+      hide();
       resolve(res[0].hash);
     }
   });
 }
 
-async function  deploy() {
+async function deploy() {
   accounts = await web3.eth.getAccounts();
   courseList = await new web3.eth.Contract(Imooc.CourseList.abi, accounts[0]);
 
@@ -51,6 +52,10 @@ async function  deploy() {
   console.log('合约部署成功', courseList.options.address);
 }
 
+async function getCourseByAddress(address) {
+  return await new web3.eth.Contract(Imooc.Course.abi, address);
+}
+
 deploy();
 
-export { ipfs, ipfsPrefix, saveImageToIpfs, web3, courseList };
+export { ipfs, ipfsPrefix, saveImageToIpfs, web3, courseList, getCourseByAddress };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col, Form, Input, Upload, Button } from 'antd';
 import FormItem from 'antd/lib/form/FormItem';
-import { saveImageToIpfs, ipfsPrefix } from '../config';
+import { saveImageToIpfs, ipfsPrefix, web3, courseList } from '../config';
 
 class Create extends React.Component {
   constructor(props) {
@@ -16,9 +16,20 @@ class Create extends React.Component {
     }
   }
 
-  handleSubmit = (e) => {
+  handleSubmit = async (e) => {
     console.log(this.state);
     e.preventDefault();
+
+    const [account] = await web3.eth.getAccounts();
+    const arr = [
+      this.state.name,
+      this.state.content,
+      web3.utils.toWei(this.state.target),
+      web3.utils.toWei(this.state.fundingPrice),
+      web3.utils.toWei(this.state.price),
+      this.state.img
+    ];
+    console.log(arr);
   }
 
   handleUpload = async (file) => {

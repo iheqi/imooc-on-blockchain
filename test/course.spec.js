@@ -198,6 +198,5 @@ describe('测试', () => {
 
     const video = await vueCourse.methods.video().call();
     console.log(video);
-
   });
 });

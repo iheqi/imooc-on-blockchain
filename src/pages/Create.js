@@ -8,12 +8,12 @@ class Create extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      content: '',
-      img: '',
-      target: '',
-      fundingPrice: '',
-      price: ''
+      name: "vue", 
+      content: "精通vue", 
+      target: "20000000000000000000", 
+      fundingPrice: "1000000000000000000", 
+      price: "2000000000000000000", 
+      img: "QmQafQHMWG1cDLUvvHUYavBjD4LcDcnxa1tUBHZ6DxC2bE"
     }
   }
 

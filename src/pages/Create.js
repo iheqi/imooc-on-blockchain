@@ -37,6 +37,7 @@ class Create extends React.Component {
       from: accounts[0],
       gas: 5000000
     });
+    console.log('创建课程成功');
     this.setState({
       toHomePage: true
     });

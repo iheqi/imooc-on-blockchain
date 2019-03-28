@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Link } from "react-router-dom";
+import { BrowserRouter, Route } from "react-router-dom";
 import { Layout } from 'antd';
 import Create from './pages/Create';
 import Course from './pages/Course';
@@ -21,21 +21,6 @@ class App extends Component {
           </Content>
           <Footer>Footer</Footer>
         </Layout>
-        {/* <div>
-          <ul>
-            <li>
-              <Link to="/">课程</Link>
-            </li>
-            <li>
-              <Link to="/qa">问答区</Link>
-            </li>
-            <li>
-              <Link to="/create">新建</Link>
-            </li>
-          </ul>
-
-
-        </div> */}
       </BrowserRouter>
     );
   }

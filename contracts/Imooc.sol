@@ -120,9 +120,9 @@ contract Course {
 
     function getDetail() public view returns (string memory, string memory, uint, uint, uint, string memory, string memory, bool, uint, uint) {
         uint role = 2;
-        if (msg.sender == owner) {
+        if (msg.sender == owner) { // 讲师
             role = 0;
-        } else if (users[msg.sender] != 0) {
+        } else if (users[msg.sender] != 0) { // 已购买的学员
             role = 1;
         }
         return (

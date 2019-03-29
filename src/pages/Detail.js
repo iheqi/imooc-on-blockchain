@@ -1,6 +1,6 @@
 import React from 'react';
-import { web3, getCourseByAddress  } from '../config';
-import { Button, Badge, Form, Row, Col } from 'antd';
+import { web3, getCourseByAddress, saveImageToIpfs, ipfsPrefix  } from '../config';
+import { Button, Badge, Form, Row, Col, Upload } from 'antd';
 import FormItem from 'antd/lib/form/FormItem';
 
 class Detail extends React.Component {
@@ -26,7 +26,9 @@ class Detail extends React.Component {
     const [account] = await web3.eth.getAccounts();
     console.log("当前账号", account);
     const course = await getCourseByAddress(this.state.address);
-    const res = await course.methods.getDetail().call();
+    const res = await course.methods.getDetail().call({
+      from: account
+    });
     console.log(res);
     let [name, content, price, fundingPrice, target, img, video,  isOnline, count, role] = Object.values(res);
     this.setState({
@@ -42,7 +44,7 @@ class Detail extends React.Component {
       fundingPrice: web3.utils.fromWei(fundingPrice),
       price: web3.utils.fromWei(price)
     });
-
+    console.log("role", this.state.role);
   }
   buyCourse = async () => {
     const contract = await getCourseByAddress(this.state.address);
@@ -53,6 +55,20 @@ class Detail extends React.Component {
       value: web3.utils.toWei(buyPrice),
       gas: 6000000
     });
+    this.init();
+  }
+  handleUpload = async (file) => {
+    const hash = await saveImageToIpfs(file);
+
+    const course = await getCourseByAddress(this.state.address);
+    await course.methods.addVideo(hash).send({
+      from: this.state.account,
+      gas: 6000000
+    });
+    this.setState({
+      video: hash
+    });
+    console.log("视频上传成功", hash);    
     this.init();
   }
   render() {
@@ -78,18 +94,23 @@ class Detail extends React.Component {
           </FormItem>
           <FormItem {...formItemLayout} label="身份">
             {
-              this.state.role == 0 && "上传视频"
+              this.state.role === "0" && 
+              <Upload beforeUpload={this.handleUpload} showUploadList={false}>
+                <Button>上传视频</Button>
+              </Upload>
             }
             {
-              this.state.role == 1 && "已购买"
+              this.state.role === "1" && "已购买"
             }
             {
-              this.state.role == 2 && "学员"
+              this.state.role === "2" && "学员"
             }                        
           </FormItem>
 
           <FormItem {...formItemLayout} label="视频状态">
-            {this.state.video ? "视频播放" : "等待视频上传" }
+            {this.state.video ? (
+              this.state.role === "2" ? "已上传" : <video controls width="300px" src={`${ipfsPrefix}${this.state.video}`}></video>
+            ) : "等待视频上传" }
           </FormItem>
           <FormItem {...formItemLayout} label="视频状态">
             {

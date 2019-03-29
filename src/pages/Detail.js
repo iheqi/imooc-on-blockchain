@@ -19,15 +19,16 @@ class Detail extends React.Component {
       isOnline: false, 
       role: 1
     };
-    // this.init();
+    this.init();
   }
 
   init = async () => {
     const [account] = await web3.eth.getAccounts();
+    console.log("当前账号", account);
     const course = await getCourseByAddress(this.state.address);
     const res = await course.methods.getDetail().call();
-    let [name, content, target, fundingPrice, price, img, video, count, isOnline, role] = Object.values(res);
-
+    console.log(res);
+    let [name, content, price, fundingPrice, target, img, video,  isOnline, count, role] = Object.values(res);
     this.setState({
       account,
       name,
@@ -43,8 +44,16 @@ class Detail extends React.Component {
     });
 
   }
-  buyCourse = () => {
+  buyCourse = async () => {
+    const contract = await getCourseByAddress(this.state.address);
+    const buyPrice = this.state.isOnline ? this.state.price : this.state.fundingPrice;
 
+    await contract.methods.buy().send({
+      from: this.state.account,
+      value: web3.utils.toWei(buyPrice),
+      gas: 6000000
+    });
+    this.init();
   }
   render() {
     const formItemLayout = {

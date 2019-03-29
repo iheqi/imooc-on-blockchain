@@ -3,6 +3,7 @@ pragma solidity ^0.5.0;
 contract CourseList {
     address payable public ceo;
     address[] public courses;
+    bytes23[] public questions; // 每两个为一个问题的内容
     constructor() public {
         ceo = msg.sender;
     }
@@ -48,6 +49,32 @@ contract CourseList {
 
     function isCeo() public view returns (bool) {
         return msg.sender == ceo;
+    }
+
+    function createQa(bytes23 hash1, bytes23 hash2) public {
+        questions.push(hash1);
+        questions.push(hash2);
+    }
+
+    function getQa() public view returns (bytes23[] memory)  {
+        return questions;
+    }
+
+    function updateQa(uint index, bytes23 hash1, bytes23 hash2) public {
+        questions[index * 2] = hash1;
+        questions[index * 2 + 1] = hash2;
+    }
+
+    function removeQa(uint index) public {
+        uint len = questions.length;
+
+        for (uint i = index * 2; i < len - 2; i = i + 2) {
+            questions[i] = questions[i+2];
+            questions[i+1] = questions[i+3];
+        }
+        delete questions[len-1];
+        delete questions[len-2];
+        questions.length = questions.length - 2;
     }
 }
 

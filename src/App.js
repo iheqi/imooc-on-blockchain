@@ -4,10 +4,10 @@ import { Layout } from 'antd';
 import Create from './pages/Create';
 import Course from './pages/Course';
 import Detail from './pages/Detail';
+import Qa from './pages/Qa';
 import Header from './components/Header';
 
 const { Content, Footer } = Layout;
-const Qa = () => <span>问答区</span>
 
 class App extends Component {
   render() {
@@ -21,7 +21,7 @@ class App extends Component {
             <Route path="/create" exact component={Create}></Route>
             <Route path="/detail/:address" exact component={Detail}></Route>
           </Content>
-          <Footer>Footer</Footer>
+          {/* <Footer>Footer</Footer> */}
         </Layout>
       </BrowserRouter>
     );

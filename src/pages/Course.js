@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Row, Col, Badge } from 'antd';
+import { Button, Row, Col, Badge, Switch } from 'antd';
 import { Link } from 'react-router-dom';
 import { ipfsPrefix, web3, courseList, getCourseByAddress } from '../config';
 
@@ -32,7 +32,8 @@ class Course extends React.Component {
       }],
       addressList: [], 
       account: '',
-      isCeo: false
+      isCeo: false,
+      showAll: true
     }
   }
   init = async () => {
@@ -71,13 +72,32 @@ class Course extends React.Component {
     this.init();
   }
 
+  onChangeSwitch = (val) => {
+    this.setState({
+      showAll: val
+    });
+  }
+
   render() {
     return <div>
       <Button onClick={this.init}>init</Button>
       <Row style={{marginTop: "30px"}} gutter={16}>
+        <Col span={20}>
+          <Switch 
+            onChange={this.onChangeSwitch} 
+            checkedChildren="全部" 
+            unCheckedChildren="已上线"
+            defaultChecked
+          ></Switch>
+        </Col>
         {
           this.state.detailList.map((item, i) => {
             let [name, content, target, fundingPrice, price, img, video, count, isOnline, role] = Object.values(item);
+
+            if (!this.state.showAll && !isOnline) {
+              return null;
+            }
+
             target = web3.utils.fromWei(target);
             fundingPrice = web3.utils.fromWei(fundingPrice);
             price = web3.utils.fromWei(price);

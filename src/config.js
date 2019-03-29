@@ -36,6 +36,15 @@ function saveImageToIpfs(file) {
   });
 }
 
+function saveJsonToIpfs(data) {
+  return new Promise(async (resolve, reject) => {
+    const buffer = Buffer.from(JSON.stringify(data));
+    const res = await ipfs.add(buffer);
+    console.log(res);
+    resolve(res[0].hash);
+  });
+}
+
 (async function deploy() {
   accounts = await web3.eth.getAccounts();
   console.log("accounts", accounts);
@@ -61,4 +70,4 @@ async function getCourseByAddress(address) {
 }
 
 
-export { ipfs, ipfsPrefix, saveImageToIpfs, web3, courseList, getCourseByAddress };
+export { ipfs, ipfsPrefix, saveImageToIpfs, web3, courseList, getCourseByAddress, saveJsonToIpfs };

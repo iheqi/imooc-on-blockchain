@@ -17,7 +17,7 @@ class Course extends React.Component {
         video: "video", 
         count: 6, 
         isOnline: true, 
-        isRole: true
+        role: 0
       }, {
         name: "react", 
         content: "精通react", 
@@ -28,7 +28,7 @@ class Course extends React.Component {
         video: "video", 
         count: 0, 
         isOnline: false, 
-        isRole: true
+        role: 1
       }],
       addressList: [], 
       account: '',
@@ -77,7 +77,7 @@ class Course extends React.Component {
       <Row style={{marginTop: "30px"}} gutter={16}>
         {
           this.state.detailList.map((item, i) => {
-            let [name, content, target, fundingPrice, price, img, video, count, isOnline, isRole] = Object.values(item);
+            let [name, content, target, fundingPrice, price, img, video, count, isOnline, role] = Object.values(item);
             target = web3.utils.fromWei(target);
             fundingPrice = web3.utils.fromWei(fundingPrice);
             price = web3.utils.fromWei(price);

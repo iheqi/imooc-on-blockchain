@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Row, Col, message, Input, Button } from 'antd';
+import { Form, Row, Col, message, Input, Button, Comment, Badge, Modal } from 'antd';
 import { web3, courseList, saveJsonToIpfs, getJsonFromIpfs } from '../config';
 
 const FormItem = Form.Item;
@@ -9,7 +9,10 @@ class Qa extends React.Component {
     this.state = {
       questions: [],
       title: '',
-      content: ''
+      content: '',
+      ansIndex: 0,
+      showModal: false,
+      answer: ''
     }
     // this.init();
   }
@@ -62,10 +65,65 @@ class Qa extends React.Component {
     });
     hide();
   }
+
+  showInfoModal = (i) => {
+    this.setState({
+      ansIndex: i,
+      showModal: true
+    });
+  }
+
+  handleOk = async (e) => {
+    const item = this.state.questions[this.state.ansIndex];
+    item.answers.push({
+      text: this.state.answer
+    });
+    const hash = await saveJsonToIpfs(item);
+    const hash1 = web3.utils.asciiToHex(hash.slice(0, 23), 23);
+    const hash2 = web3.utils.asciiToHex(hash.slice(23), 23);
+    await courseList.methods.updateQa(this.state.ansIndex, hash1, hash2).send({
+      from: this.state.account,
+      gas: 5000000
+    });
+    this.init();
+    this.handleCancel();
+  }
+  handleCancel = () => {
+    this.setState({
+      showModal: false,
+      answer: ''
+    });
+  }
+  handleAnsChange = (e) => {
+    this.setState({
+      answer: e.target.value
+    });
+  }
+
   render() {
     return <Row justify="center">
       <Button onClick={this.init}>init</Button>
       <Col span={20}>
+        {
+          this.state.questions.map((item, index) => {
+            return <Comment
+              actions={[<span onClick={() => this.showInfoModal(index)}>回复</span>]}
+              author={item.title}
+              content={item.content}
+              avatar={<Badge count={index+1}></Badge>}
+              key={index}
+            >
+              {
+                item.answers.map((ans) => {
+                  return <Comment 
+                    key={ans.text}
+                    content={ans.text}>
+                  </Comment>
+                })
+              }
+            </Comment>
+          })
+        }
         <Form onSubmit={this.handleSubmit} style={{marginTop: "20px"}}>
           <FormItem label="标题">
             <Input value={this.state.title} name="title" onChange={this.handleChange}></Input>
@@ -84,6 +142,17 @@ class Qa extends React.Component {
             <Button htmlType="submit">提交</Button>
           </FormItem>
         </Form>
+
+        <Modal
+          title="回复"
+          visible={this.state.showModal}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+          okText="确定"
+          cancelText="取消"
+        >
+          <Input value={this.state.answer} onChange={this.handleAnsChange}></Input>
+        </Modal>
       </Col>
     </Row>
   }

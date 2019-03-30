@@ -1,15 +1,34 @@
 import React from 'react';
 import { Form, Row, Col, message, Input, Button } from 'antd';
-import { web3, courseList, saveJsonToIpfs } from '../config';
+import { web3, courseList, saveJsonToIpfs, getJsonFromIpfs } from '../config';
 
 const FormItem = Form.Item;
 class Qa extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      questions: [],
       title: '',
       content: ''
     }
+    // this.init();
+  }
+
+  init = async () => {
+    let [account] = await web3.eth.getAccounts();
+    const qas = await courseList.methods.getQa().call();
+    const res = [];
+
+    for (let i = 0; i < qas.length; i += 2) {
+      res.push(getJsonFromIpfs(qas[i], qas[i + 1]));
+      // getJsonFromIpfs(qas[i], qas[i + 1]);
+    }
+    const questions = await Promise.all(res);
+    console.log(questions);
+    this.setState({
+      account,
+      questions
+    });
   }
 
   handleChange = (e) => {
@@ -45,6 +64,7 @@ class Qa extends React.Component {
   }
   render() {
     return <Row justify="center">
+      <Button onClick={this.init}>init</Button>
       <Col span={20}>
         <Form onSubmit={this.handleSubmit} style={{marginTop: "20px"}}>
           <FormItem label="标题">

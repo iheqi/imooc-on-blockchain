@@ -45,6 +45,16 @@ function saveJsonToIpfs(data) {
   });
 }
 
+async function getJsonFromIpfs(v1, v2) {
+  return new Promise(async (resolve, reject) => {
+    const hash = web3.utils.hexToAscii(v1) + web3.utils.hexToAscii(v2);
+    const res = await ipfs.cat(hash);
+    const data = new TextDecoder('utf-8').decode(res);
+    console.log(hash, res, data)
+    resolve(JSON.parse(data));
+  });  
+}
+
 (async function deploy() {
   accounts = await web3.eth.getAccounts();
   console.log("accounts", accounts);
@@ -63,11 +73,17 @@ function saveJsonToIpfs(data) {
   console.log('合约部署成功', courseList.options.address);
 })();
 
-
-
 async function getCourseByAddress(address) {
   return await new web3.eth.Contract(Imooc.Course.abi, address);
 }
 
-
-export { ipfs, ipfsPrefix, saveImageToIpfs, web3, courseList, getCourseByAddress, saveJsonToIpfs };
+export { 
+  ipfs, 
+  ipfsPrefix, 
+  saveImageToIpfs, 
+  web3, 
+  courseList, 
+  getCourseByAddress, 
+  saveJsonToIpfs,
+  getJsonFromIpfs 
+};

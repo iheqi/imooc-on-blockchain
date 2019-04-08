@@ -1,0 +1,23 @@
+.qa-header {
+  padding: 15px 15px 0;
+  font-size: 16px;
+  line-height: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.qa-header .text {
+  float: left;
+}
+
+.qa-header .button {
+  float: right;
+}
+
+.qa-list {
+  margin-left: 30px;
+}
+
+.qa-list .qa-content {
+  cursor: pointer;
+}

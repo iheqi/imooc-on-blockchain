@@ -1,8 +1,7 @@
 import React from 'react';
 import { Button, Row, Col, Badge, Switch } from 'antd';
 import { Link } from 'react-router-dom';
-import { ipfsPrefix, web3, courseList, getCourseByAddress } from '../config';
-
+import { ipfsPrefix, web3, courseList, getCourseByAddress } from '../../config';
 class Course extends React.Component {
   constructor(props) {
     super(props);
@@ -12,7 +11,10 @@ class Course extends React.Component {
       addressList: [], 
       account: '',
       isCeo: false,
-      showAll: true
+      showAll: true,
+      styles: {
+
+      }
     }
   }
   init = async () => {
@@ -53,7 +55,6 @@ class Course extends React.Component {
       console.log(error);
     }
 
-    // courses = await courseList.methods.getCourses().call();
     this.init();
   }
 
@@ -65,14 +66,14 @@ class Course extends React.Component {
 
   render() {
     return <div>
-      <Button onClick={this.init}>init</Button>
-      <Row style={{marginTop: "30px"}} gutter={16}>
+      <Row style={{margin: "30px"}} gutter={16}>
         <Col span={20}>
           <Switch 
             onChange={this.onChangeSwitch} 
             checkedChildren="全部" 
             unCheckedChildren="已上线"
             defaultChecked
+            style={{margin: "20px"}}
           ></Switch>
         </Col>
         {
@@ -86,11 +87,13 @@ class Course extends React.Component {
             fundingPrice = web3.utils.fromWei(fundingPrice.toString());
             price = web3.utils.fromWei(price.toString());
             const address = this.state.addressList[i];
+
+            console.log(typeof target, fundingPrice);
             return (
-              <Col key={img} span={6}>
+              <Col key={img} span={6} style={{padding: "10px"}}>
                 <div className="content">
-                  <div>
-                    <span>{name}</span>
+                  <div style={{ margin: "10px" }}>
+                    <span style={{ margin: "10px" }}>{name}</span>
                     <span>
                       {
                         isOnline ? <Badge count="已上线" style={{background: "#52c41a"}}></Badge>
@@ -104,7 +107,7 @@ class Course extends React.Component {
 
                   <div className="center">
                       <p>
-                        {`目标${target}ETH, 已有${count}人支持。`}
+                        目标<span style={{color: "#f01414"}}>{target.toString()}</span>ETH, 已有<span style={{color: "#f01414"}}>{count.toString()}</span>人支持。
                       </p>
 
                       <p>
@@ -114,13 +117,13 @@ class Course extends React.Component {
                         }
                       </p>
 
-                      <Button type="primary">
+                      <Button type="primary" style={{margin: "5px"}}>
                         <Link to={`/detail/${address}`}>查看详情</Link>
                       </Button>
                       
                       {
                         this.state.isCeo ? 
-                          <Button type="danger" onClick={() => this.removeCourse(i)}>删除课程</Button> : null
+                          <Button type="danger" style={{margin: "5px"}} onClick={() => this.removeCourse(i)}>删除课程</Button> : null
                       }
 
                   </div>                  

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Row, Col, message, Input, Button, Comment, Badge, Modal } from 'antd';
-import { web3, courseList, saveJsonToIpfs, getJsonFromIpfs } from '../config';
+import { web3, courseList, saveJsonToIpfs, getJsonFromIpfs } from '../../config';
+import './style.css';
 
 const FormItem = Form.Item;
 class Qa extends React.Component {
@@ -11,10 +12,11 @@ class Qa extends React.Component {
       title: '',
       content: '',
       ansIndex: 0,
-      showModal: false,
+      showReplyModal: false,
+      showQueryModal: false,
       answer: ''
     }
-    // this.init();
+    this.init();
   }
 
   init = async () => {
@@ -66,14 +68,14 @@ class Qa extends React.Component {
     hide();
   }
 
-  showInfoModal = (i) => {
+  showReplyModal = (i) => {
     this.setState({
       ansIndex: i,
-      showModal: true
+      showReplyModal: true
     });
   }
 
-  handleOk = async (e) => {
+  handleReplyOk = async (e) => {
     const item = this.state.questions[this.state.ansIndex];
     item.answers.push({
       text: this.state.answer
@@ -86,14 +88,21 @@ class Qa extends React.Component {
       gas: 5000000
     });
     this.init();
-    this.handleCancel();
+    this.handleReplyCancel();
   }
-  handleCancel = () => {
+  handleReplyCancel = () => {
     this.setState({
-      showModal: false,
+      showReplyModal: false,
       answer: ''
     });
   }
+
+  handleQueryCancel = () => {
+    this.setState({
+      showQueryModal: false,
+    });
+  }
+
   handleAnsChange = (e) => {
     this.setState({
       answer: e.target.value
@@ -102,16 +111,20 @@ class Qa extends React.Component {
 
   render() {
     return <Row justify="center">
-      <Button onClick={this.init}>init</Button>
-      <Col span={20}>
+      <div className="qa-header">
+        <span className="text">分享与求助</span>
+        <Button className="button" type="primary" onClick={()=> this.setState({showQueryModal: true})}>我要发布</Button>
+      </div>
+      <Col span={20} className="qa-list">
         {
           this.state.questions.map((item, index) => {
             return <Comment
-              actions={[<span onClick={() => this.showInfoModal(index)}>回复</span>]}
+              actions={[<span onClick={() => this.showReplyModal(index)}>回复</span>]}
               author={item.title}
               content={item.content}
               avatar={<Badge count={index+1}></Badge>}
               key={index}
+              className="qa-content"
             >
               {
                 item.answers.map((ans) => {
@@ -124,36 +137,41 @@ class Qa extends React.Component {
             </Comment>
           })
         }
-        <Form onSubmit={this.handleSubmit} style={{marginTop: "20px"}}>
-          <FormItem label="标题">
-            <Input value={this.state.title} name="title" onChange={this.handleChange}></Input>
-          </FormItem>
+      </Col>
+      <Modal
+          title="发布问题"
+          visible={this.state.showQueryModal}
+          onOk={this.handleSubmit}
+          onCancel={this.handleQueryCancel}
+          okText="确定"
+          cancelText="取消"
+        >
+          <Form style={{marginTop: "20px"}}>
+            <FormItem label="标题">
+              <Input value={this.state.title} name="title" onChange={this.handleChange}></Input>
+            </FormItem>
 
-          <FormItem label="问题描述">
-            <Input.TextArea 
-              rows={6}
-              value={this.state.content}
-              name="content"
-              onChange={this.handleChange}
-            ></Input.TextArea>
-          </FormItem>
-
-          <FormItem>
-            <Button htmlType="submit">提交</Button>
-          </FormItem>
-        </Form>
+            <FormItem label="问题描述">
+              <Input.TextArea 
+                rows={6}
+                value={this.state.content}
+                name="content"
+                onChange={this.handleChange}
+              ></Input.TextArea>
+            </FormItem>
+          </Form>
+        </Modal>
 
         <Modal
           title="回复"
-          visible={this.state.showModal}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
+          visible={this.state.showReplyModal}
+          onOk={this.handleReplyOk}
+          onCancel={this.handleReplyCancel}
           okText="确定"
           cancelText="取消"
         >
           <Input value={this.state.answer} onChange={this.handleAnsChange}></Input>
-        </Modal>
-      </Col>
+        </Modal>      
     </Row>
   }
 }

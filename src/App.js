@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route } from "react-router-dom";
 import { Layout } from 'antd';
-import Create from './pages/Create';
-import Course from './pages/Course';
+import Course from './pages/Course/Course';
+import Create from './pages/Create/Create';
 import Detail from './pages/Detail';
-import Qa from './pages/Qa';
+import Qa from './pages/Qa/Qa';
 import Header from './components/Header';
 
 const { Content, Footer } = Layout;

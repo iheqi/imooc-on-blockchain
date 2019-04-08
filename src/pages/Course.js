@@ -6,30 +6,9 @@ import { ipfsPrefix, web3, courseList, getCourseByAddress } from '../config';
 class Course extends React.Component {
   constructor(props) {
     super(props);
+    this.init();
     this.state = {
-      detailList: [{
-        name: "vue", 
-        content: "精通vue", 
-        target: "20000000000000000000", 
-        fundingPrice: "1000000000000000000", 
-        price: "2000000000000000000", 
-        img: "QmQafQHMWG1cDLUvvHUYavBjD4LcDcnxa1tUBHZ6DxC2bE", 
-        video: "video", 
-        count: 6, 
-        isOnline: true, 
-        role: 0
-      }, {
-        name: "react", 
-        content: "精通react", 
-        target: "40000000000000000000", 
-        fundingPrice: "1000000000000000000", 
-        price: "2000000000000000000", 
-        img: "QmQafQHMWG1cDLUvvHUYavBjD4LcDcnxa1tUBHZ6DxC2bE", 
-        video: "video", 
-        count: 0, 
-        isOnline: false, 
-        role: 1
-      }],
+      detailList: [],
       addressList: [], 
       account: '',
       isCeo: false,
@@ -38,10 +17,14 @@ class Course extends React.Component {
   }
   init = async () => {
     const [account] = await web3.eth.getAccounts(); 
-    const addressList = await courseList.methods.getCourses().call();
+    const addressList = await courseList.methods.getCourses().call({
+      from: account
+    });
+
     const isCeo = await courseList.methods.isCeo().call({
       from: account
     });
+
     const detailList = await Promise.all(
       addressList.map(async (address) => {
         const course = await getCourseByAddress(address);
@@ -49,6 +32,8 @@ class Course extends React.Component {
         return res;
       })
     );
+
+    console.log(detailList);
 
     this.setState({
       detailList: detailList,
@@ -92,15 +77,14 @@ class Course extends React.Component {
         </Col>
         {
           this.state.detailList.map((item, i) => {
-            let [name, content, target, fundingPrice, price, img, video, count, isOnline, role] = Object.values(item);
-
+            let [name, content, price, fundingPrice, target, img, video,  isOnline, count, role] = Object.values(item);
             if (!this.state.showAll && !isOnline) {
               return null;
             }
 
-            target = web3.utils.fromWei(target);
-            fundingPrice = web3.utils.fromWei(fundingPrice);
-            price = web3.utils.fromWei(price);
+            target = web3.utils.fromWei(target.toString());
+            fundingPrice = web3.utils.fromWei(fundingPrice.toString());
+            price = web3.utils.fromWei(price.toString());
             const address = this.state.addressList[i];
             return (
               <Col key={img} span={6}>

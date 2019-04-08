@@ -31,11 +31,13 @@ class Create extends React.Component {
       web3.utils.toWei(this.state.target),
       this.state.img
     ];
-    console.log(arr);
+    console.log(arr, courseList.methods.createCourse);
 
     await courseList.methods.createCourse(...arr).send({
       from: accounts[0],
       gas: 5000000
+    }, (error, hash) => {
+      console.log(error, hash);
     });
     console.log('创建课程成功');
     this.setState({

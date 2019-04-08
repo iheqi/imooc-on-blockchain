@@ -2,6 +2,7 @@ import ipfsClient from 'ipfs-http-client';
 import Web3 from 'web3';
 import { notification, message } from 'antd';
 import Imooc from '../src/compiled/Imooc.json';
+import address from '../src/address';
 
 let ipfs = ipfsClient("ipfs.infura.io", "5001", { protocol: "https" });
 // let ipfs = ipfsClient('localhost', '5002', { protocol: 'http' });
@@ -58,19 +59,30 @@ async function getJsonFromIpfs(v1, v2) {
 (async function deploy() {
   accounts = await web3.eth.getAccounts();
   console.log("accounts", accounts);
-  courseList = await new web3.eth.Contract(Imooc.CourseList.abi, accounts[0]);
+  // courseList = await new web3.eth.Contract(Imooc.CourseList.abi, accounts[0]);
 
-  // courseList = await new web3.eth.Contract(Imooc.CourseList.abi, address); // 如果部署到了infura, 那这个address就是部署成功时返回的address
-  await courseList.deploy({
-    data: Imooc.CourseList.evm.bytecode.object
-  }).send({
-    from: accounts[0],
-    gas: 5000000
-  }, (error, hash) => {
-    console.log(error, hash);
+  // 如果部署到了infura, 那这个address就是部署成功时返回的address, 直接获取，不用部署了
+
+  // await result = 0xff7e5cad0c504b85ad6fcbf9d35bf0d5fb5f1c8d
+
+  courseList = await new web3.eth.Contract(Imooc.CourseList.abi, address); // 这里不能用自己的abi？
+
+  // const result = await courseList.deploy({
+  //   data: Imooc.CourseList.evm.bytecode.object
+  // }).send({
+  //   from: accounts[0],
+  //   gas: 5000000
+  // });
+  const res = await courseList.methods.isCeo().call({
+    from: accounts[0]
   });
 
-  console.log('合约部署成功', courseList.options.address);
+  console.log('合约部署到的地址：', courseList, courseList.methods, courseList.address, res);
+
+  // const res = await courseList.methods.getDetail().call({
+  //   from: accounts[0]
+  // });  
+  // console.log('合约部署成功', courseList.options.address);
 })();
 
 async function getCourseByAddress(address) {

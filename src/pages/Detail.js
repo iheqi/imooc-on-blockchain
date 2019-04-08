@@ -8,43 +8,34 @@ class Detail extends React.Component {
     super(props);
     this.state = {
       address: this.props.match.params.address,
-      name: "react", 
-      content: "精通react", 
-      target: "40000000000000000000", 
-      fundingPrice: "1000000000000000000", 
-      price: "2000000000000000000", 
-      img: "QmQafQHMWG1cDLUvvHUYavBjD4LcDcnxa1tUBHZ6DxC2bE", 
-      video: "video", 
-      count: 0, 
-      isOnline: false, 
-      role: 1
     };
     this.init();
   }
 
   init = async () => {
     const [account] = await web3.eth.getAccounts();
-    console.log("当前账号", account);
     const course = await getCourseByAddress(this.state.address);
-    const res = await course.methods.getDetail().call({
+    this.setState({
+      course: course
+    });
+    const res = await this.state.course.methods.getDetail().call({
       from: account
     });
-    console.log(res);
     let [name, content, price, fundingPrice, target, img, video,  isOnline, count, role] = Object.values(res);
+
     this.setState({
       account,
       name,
       content,
       img,
       video,
-      count,
+      count: count.toString(),
       isOnline,
-      role,
-      target: web3.utils.fromWei(target),
-      fundingPrice: web3.utils.fromWei(fundingPrice),
-      price: web3.utils.fromWei(price)
+      role: role.toString(),
+      target: web3.utils.fromWei(target.toString()),
+      fundingPrice: web3.utils.fromWei(fundingPrice.toString()),
+      price: web3.utils.fromWei(price.toString())
     });
-    console.log("role", this.state.role);
   }
   buyCourse = async () => {
     const contract = await getCourseByAddress(this.state.address);
@@ -60,10 +51,10 @@ class Detail extends React.Component {
   handleUpload = async (file) => {
     const hash = await saveImageToIpfs(file);
 
-    const course = await getCourseByAddress(this.state.address);
-    await course.methods.addVideo(hash).send({
+    // const course = await getCourseByAddress(this.state.address);
+    await this.state.course.methods.addVideo(hash).send({
       from: this.state.account,
-      gas: 6000000
+      gas: 5000000
     });
     this.setState({
       video: hash
@@ -114,11 +105,11 @@ class Detail extends React.Component {
           </FormItem>
           <FormItem {...formItemLayout} label="视频状态">
             {
-              this.state.role == 2 && (
+              (this.state.role == 2) ? (
                 <Button onClick={this.buyCourse}>
                   支持 { this.state.isOnline ? this.state.price : this.state.fundingPrice }
                 </Button>
-              ) 
+              ) : null
             }
           </FormItem>
         </Form>

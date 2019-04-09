@@ -20,4 +20,8 @@
 
 .qa-list .qa-content {
   cursor: pointer;
+  margin: 10px;
+  padding: 10px;
+  border: solid white 1px;
+  border-radius: 5px;
 }

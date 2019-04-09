@@ -43,6 +43,7 @@ class Qa extends React.Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     const data = {
+      author: `用户${this.state.account.slice(-7)}`,
       title: this.state.title,
       content: this.state.content,
       answers: []
@@ -66,13 +67,12 @@ class Qa extends React.Component {
     });
     hide();
   }
-  
+
   handleQueryCancel = () => {
     this.setState({
       showQueryModal: false,
     });
   }
-
 
   render() {
     return <Row justify="center">
@@ -86,13 +86,11 @@ class Qa extends React.Component {
             return (
                 
             <Link to={{ pathname: `/discuss/${index}`, query: this.state.questions[index] }} key={index}>
-              <Comment
-                author={item.title}
-                content={item.content}
-                avatar={<Badge count={index+1}></Badge>}
-                className="qa-content"
-              >
-              </Comment>
+              <div className="qa-content">
+                <h1>{item.title}</h1>
+                <p>{item.content}</p>
+                <span>{item.author}</span>
+              </div>
             </Link>)
           })
         }

@@ -26,6 +26,7 @@ class Discuss extends Component {
   handleReplyOk = async () => {
     const item = JSON.parse(JSON.stringify(this.state.question));
     item.answers.push({
+      author: `用户${this.state.account.slice(-7)}`,
       text: this.state.answer
     });
     const hash = await saveJsonToIpfs(item);
@@ -59,6 +60,21 @@ class Discuss extends Component {
     });
   }
 
+  removeQa = async () => {
+    console.log(this.state.account);
+    const isCeo = await courseList.methods.isCeo().call({
+      from: this.state.account
+    });
+
+    if (isCeo) {
+      await courseList.methods.removeQa(this.state.ansIndex).send({
+        from: this.state.account,
+        gas: 5000000
+      });
+      console.log("删除成功");
+    }
+  }
+
   render() {
     return (
       <div>
@@ -70,13 +86,17 @@ class Discuss extends Component {
         <div>
           <div className="ans-list-header">
             <span className="count">{this.state.question.answers.length}条回复</span>
-            <Button onClick={this.showModal} type="primary">回复</Button>
+            <span>
+              <Button onClick={this.showModal} type="primary">回复</Button>
+              <Button onClick={this.removeQa} type="danger">删除帖子</Button>
+            </span>
           </div>
           {
             this.state.question.answers.map((ans, index) => {
               return <div 
                 className="ans-item"
-                key={ans.text}>
+                key={`${ans.author}${ans.text}`}>
+                <p>{ans.author}</p>
                 {ans.text}
                 <span className="ans-floor">{index+1}#</span>
               </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Form, Row, Col, message, Input, Button, Comment, Badge, Modal } from 'antd';
 import { web3, courseList, saveJsonToIpfs, getJsonFromIpfs } from '../../config';
 import './style.css';
@@ -12,9 +13,7 @@ class Qa extends React.Component {
       title: '',
       content: '',
       ansIndex: 0,
-      showReplyModal: false,
       showQueryModal: false,
-      answer: ''
     }
     this.init();
   }
@@ -67,47 +66,13 @@ class Qa extends React.Component {
     });
     hide();
   }
-
-  showReplyModal = (i) => {
-    this.setState({
-      ansIndex: i,
-      showReplyModal: true
-    });
-  }
-
-  handleReplyOk = async (e) => {
-    const item = this.state.questions[this.state.ansIndex];
-    item.answers.push({
-      text: this.state.answer
-    });
-    const hash = await saveJsonToIpfs(item);
-    const hash1 = web3.utils.asciiToHex(hash.slice(0, 23), 23);
-    const hash2 = web3.utils.asciiToHex(hash.slice(23), 23);
-    await courseList.methods.updateQa(this.state.ansIndex, hash1, hash2).send({
-      from: this.state.account,
-      gas: 5000000
-    });
-    this.init();
-    this.handleReplyCancel();
-  }
-  handleReplyCancel = () => {
-    this.setState({
-      showReplyModal: false,
-      answer: ''
-    });
-  }
-
+  
   handleQueryCancel = () => {
     this.setState({
       showQueryModal: false,
     });
   }
 
-  handleAnsChange = (e) => {
-    this.setState({
-      answer: e.target.value
-    });
-  }
 
   render() {
     return <Row justify="center">
@@ -118,23 +83,17 @@ class Qa extends React.Component {
       <Col span={20} className="qa-list">
         {
           this.state.questions.map((item, index) => {
-            return <Comment
-              actions={[<span onClick={() => this.showReplyModal(index)}>回复</span>]}
-              author={item.title}
-              content={item.content}
-              avatar={<Badge count={index+1}></Badge>}
-              key={index}
-              className="qa-content"
-            >
-              {
-                item.answers.map((ans) => {
-                  return <Comment 
-                    key={ans.text}
-                    content={ans.text}>
-                  </Comment>
-                })
-              }
-            </Comment>
+            return (
+                
+            <Link to={{ pathname: `/discuss/${index}`, query: this.state.questions[index] }} key={index}>
+              <Comment
+                author={item.title}
+                content={item.content}
+                avatar={<Badge count={index+1}></Badge>}
+                className="qa-content"
+              >
+              </Comment>
+            </Link>)
           })
         }
       </Col>
@@ -160,18 +119,7 @@ class Qa extends React.Component {
               ></Input.TextArea>
             </FormItem>
           </Form>
-        </Modal>
-
-        <Modal
-          title="回复"
-          visible={this.state.showReplyModal}
-          onOk={this.handleReplyOk}
-          onCancel={this.handleReplyCancel}
-          okText="确定"
-          cancelText="取消"
-        >
-          <Input value={this.state.answer} onChange={this.handleAnsChange}></Input>
-        </Modal>      
+        </Modal>    
     </Row>
   }
 }

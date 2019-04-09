@@ -1,5 +1,5 @@
 import React from 'react';
-import { web3, getCourseByAddress, saveImageToIpfs, ipfsPrefix  } from '../config';
+import { web3, getCourseByAddress, saveImageToIpfs, ipfsPrefix  } from '../../config';
 import { Button, Badge, Form, Row, Col, Upload } from 'antd';
 import FormItem from 'antd/lib/form/FormItem';
 

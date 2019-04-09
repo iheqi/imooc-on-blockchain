@@ -1,0 +1,42 @@
+.discuss-header {
+  border-bottom: 1px solid #ddd;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.ans-list-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.ans-list-header .count {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.ans-item {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 20px;
+  position: relative;
+  padding-top: 15px;
+  margin-bottom: 4px;
+}
+
+.ans-floor {
+  padding: 1px 12px;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 14px;
+  background: #dcdadc;
+  float: right;
+  margin-right: 20px;
+}
+
+.editor-box {
+  padding: 20px;
+}
+
+.editor-box Button {
+  margin: 10px 0;
+}

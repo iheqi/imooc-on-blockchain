@@ -7,7 +7,7 @@ class Detail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      address: this.props.match.params.address,
+      address: this.props.match.params.address ? this.props.match.params.address : '',
     };
     this.init();
   }

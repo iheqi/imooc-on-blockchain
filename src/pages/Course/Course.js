@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Row, Col, Badge, Switch } from 'antd';
+import { Button, Row, Col, Badge, Switch, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import { ipfsPrefix, web3, courseList, getCourseByAddress } from '../../config';
 class Course extends React.Component {
@@ -12,9 +12,7 @@ class Course extends React.Component {
       account: '',
       isCeo: false,
       showAll: true,
-      styles: {
-
-      }
+      showLoading: "visible"
     }
   }
   init = async () => {
@@ -64,6 +62,13 @@ class Course extends React.Component {
     });
   }
 
+  handleImgOnLoad = () => {
+    console.log('fuck');
+    this.setState({
+      showLoading: "none"
+    });
+  }
+
   render() {
     return <div>
       <Row style={{margin: "30px"}} gutter={16}>
@@ -103,7 +108,8 @@ class Course extends React.Component {
                     </span>
                   </div>
 
-                  <img alt="img" className="item" src={`${ipfsPrefix}${img}`} />
+                  <Icon type="loading" style={{display: this.state.showLoading}}/>
+                  <img alt="img" className="item" src={`${ipfsPrefix}${img}`} onLoad={this.handleImgOnLoad}/>
 
                   <div className="center">
                       <p>

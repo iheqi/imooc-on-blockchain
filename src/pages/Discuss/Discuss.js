@@ -24,10 +24,15 @@ class Discuss extends Component {
     });
   }
   handleReplyOk = async () => {
+    const date = new Date();
+    const day = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+    const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
     const item = JSON.parse(JSON.stringify(this.state.question));
     item.answers.push({
       author: `用户${this.state.account.slice(-7)}`,
-      text: this.state.answer
+      text: this.state.answer,
+      time: time,
+      day: day
     });
     const hash = await saveJsonToIpfs(item);
     const hash1 = web3.utils.asciiToHex(hash.slice(0, 23), 23);
@@ -87,6 +92,7 @@ class Discuss extends Component {
           </h1>
           <p>{this.state.question.content}</p>
           <span>{this.state.question.author}</span>
+          <span className="day"> 发表于 {this.state.question.day} {this.state.question.time}</span> 
         </div>
 
         <div>
@@ -97,17 +103,23 @@ class Discuss extends Component {
               <Button onClick={this.removeQa} type="danger">删除帖子</Button>
             </span>
           </div>
-          {
-            this.state.question.answers.map((ans, index) => {
-              return <div 
-                className="ans-item"
-                key={`${ans.author}${ans.text}`}>
-                <p>{ans.author}</p>
-                {ans.text}
-                <span className="ans-floor">{index+1}#</span>
-              </div>
-            })
-          }
+
+          <div className="ans-list-content">
+            {
+              this.state.question.answers.map((ans, index) => {
+                return <div 
+                  className="ans-item"
+                  key={`${ans.author}${ans.text}`}>
+                  <p className="author">{ans.author}</p>
+                  {ans.text}
+                  <p className="day">
+                    发表于 {ans.day} {ans.time}
+                    <span className="ans-floor">{index+1}#</span> 
+                  </p>
+                </div>
+              })
+            }
+          </div>
 
           <div className="editor-box">
             <Input.TextArea 

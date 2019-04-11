@@ -5,6 +5,16 @@
   margin-bottom: 20px;
 }
 
+
+.discuss-header .day, .ans-item .day {
+  color: #a599a5;
+  font-size: 12px;
+}
+
+.ans-item .day {
+  margin-top: 6px;
+}
+
 .ans-list-header {
   display: flex;
   justify-content: space-between;
@@ -16,12 +26,25 @@
   font-weight: bold;
 }
 
+.ans-list-content {
+  margin: 10px;
+  background: white;
+}
+
 .ans-item {
   border-bottom: 1px solid #e0e0e0;
   padding: 20px;
   position: relative;
   padding-top: 15px;
   margin-bottom: 4px;
+}
+
+.ans-item p {
+  margin-bottom: 0;
+}
+
+.ans-item .author {
+  color: #67b9ff;
 }
 
 .ans-floor {

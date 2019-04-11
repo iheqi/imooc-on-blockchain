@@ -21,15 +21,26 @@
 .qa-list .qa-content {
   cursor: pointer;
   margin: 10px;
+  margin-right: 48px;
   padding: 10px;
   border-radius: 5px;
   box-shadow: 0 1px 3px 0 rgba(0,0,0,.16), 0 0 0 1px rgba(0,0,0,.04);
   background: white;
+  color: black;
+}
+
+.qa-list .qa-content .reply {
+  float: right;
 }
 
 .qa-list .qa-content .title {
   color: black;
   font-weight: bold;
+}
+
+.qa-list .qa-content .day {
+  color: #a599a5;
+  font-size: 12px;
 }
 
 .qa-list .qa-content a:hover {

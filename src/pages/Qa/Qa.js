@@ -25,10 +25,8 @@ class Qa extends React.Component {
 
     for (let i = 0; i < qas.length; i += 2) {
       res.push(getJsonFromIpfs(qas[i], qas[i + 1]));
-      // getJsonFromIpfs(qas[i], qas[i + 1]);
     }
     const questions = await Promise.all(res);
-    console.log(questions);
     this.setState({
       account,
       questions
@@ -44,8 +42,7 @@ class Qa extends React.Component {
     e.preventDefault();
     const date = new Date();
     const day = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
-    const time = `${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
-    console.log(time, day);
+    const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
     const data = {
       author: `用户${this.state.account.slice(-7)}`,
       title: this.state.title,
@@ -66,12 +63,14 @@ class Qa extends React.Component {
     ).send({
       from: account,
       gas: 5000000
+    }, () => {
+      this.setState({
+        title: '',
+        content: ''
+      });
+      hide();
+      this.init();
     });
-    this.setState({
-      title: '',
-      content: ''
-    });
-    hide();
   }
 
   handleQueryCancel = () => {
@@ -97,7 +96,10 @@ class Qa extends React.Component {
               <div className="qa-content">
                 <span className="title">{item.title}</span>
                 <p>{item.content}</p>
-                <span>{item.author}</span>
+                <span>{item.author} 
+                  <span className="day"> 发表于 {item.day}</span>
+                </span>
+                <span className="reply"><Icon type="message" /> {item.answers.length}</span>
               </div>
             </Link>)
           })

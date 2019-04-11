@@ -51,7 +51,6 @@ async function getJsonFromIpfs(v1, v2) {
     const hash = web3.utils.hexToAscii(v1) + web3.utils.hexToAscii(v2);
     const res = await ipfs.cat(hash);
     const data = new TextDecoder('utf-8').decode(res);
-    console.log(hash, res, data)
     resolve(JSON.parse(data));
   });  
 }

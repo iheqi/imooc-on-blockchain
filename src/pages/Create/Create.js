@@ -82,7 +82,7 @@ class Create extends React.Component {
               <Upload beforeUpload={this.handleUpload} showUploadList={false}>
                 {
                   this.state.img ? 
-                    <img height="100px" src={`${ipfsPrefix}${this.state.img}`}/>
+                    <img height="100px" src={`${ipfsPrefix}${this.state.img}`} alt="课程封面"/>
                       :
                     <Button>上传图片</Button>
                 }
@@ -97,7 +97,6 @@ class Create extends React.Component {
             <FormItem label="上线价格">
               <Input name="price" onChange={this.onChange}></Input>
             </FormItem>
-
             <FormItem>
               <Button htmlType="submit">添加课程</Button>
             </FormItem>

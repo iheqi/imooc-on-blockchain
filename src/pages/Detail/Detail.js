@@ -45,8 +45,9 @@ class Detail extends React.Component {
       from: this.state.account,
       value: web3.utils.toWei(buyPrice),
       gas: 6000000
+    }, () => {
+      this.init();
     });
-    this.init();
   }
   handleUpload = async (file) => {
     const hash = await saveImageToIpfs(file);
@@ -55,12 +56,13 @@ class Detail extends React.Component {
     await this.state.course.methods.addVideo(hash).send({
       from: this.state.account,
       gas: 5000000
+    }, () => {
+      this.init();
+      this.setState({
+        video: hash
+      });
+      console.log("视频上传成功", hash);  
     });
-    this.setState({
-      video: hash
-    });
-    console.log("视频上传成功", hash);    
-    this.init();
   }
   render() {
     const formItemLayout = {
@@ -103,13 +105,13 @@ class Detail extends React.Component {
               this.state.role === "2" ? "已上传" : <video controls width="300px" src={`${ipfsPrefix}${this.state.video}`}></video>
             ) : "等待视频上传" }
           </FormItem>
-          <FormItem {...formItemLayout} label="视频状态">
+          <FormItem {...formItemLayout} label="购买状态">
             {
-              (this.state.role == 2) ? (
+              (this.state.role === '2') ? (
                 <Button onClick={this.buyCourse}>
                   支持 { this.state.isOnline ? this.state.price : this.state.fundingPrice }
                 </Button>
-              ) : null
+              ) : "你是ceo或者讲师，无需购买"
             }
           </FormItem>
         </Form>

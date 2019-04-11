@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Row, Col, message, Input, Button, Comment, Badge, Modal } from 'antd';
+import { Form, Row, message, Input, Button, Modal, Icon } from 'antd';
 import { web3, courseList, saveJsonToIpfs, getJsonFromIpfs } from '../../config';
 import './style.css';
 
@@ -42,10 +42,16 @@ class Qa extends React.Component {
   }
   handleSubmit = async (e) => {
     e.preventDefault();
+    const date = new Date();
+    const day = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+    const time = `${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
+    console.log(time, day);
     const data = {
       author: `用户${this.state.account.slice(-7)}`,
       title: this.state.title,
       content: this.state.content,
+      day: day,
+      time: time,
       answers: []
     }
     const hide = message.loading("提问中");
@@ -77,24 +83,26 @@ class Qa extends React.Component {
   render() {
     return <Row justify="center">
       <div className="qa-header">
-        <span className="text">分享与求助</span>
+        <span className="text">
+          <Icon type="question-circle" style={{marginRight: "6px"}} />分享与求助
+        </span>
         <Button className="button" type="primary" onClick={()=> this.setState({showQueryModal: true})}>我要发布</Button>
       </div>
-      <Col span={20} className="qa-list">
+      <div className="qa-list">
         {
           this.state.questions.map((item, index) => {
             return (
                 
             <Link to={{ pathname: `/discuss/${index}`, query: this.state.questions[index] }} key={index}>
               <div className="qa-content">
-                <h1>{item.title}</h1>
+                <span className="title">{item.title}</span>
                 <p>{item.content}</p>
                 <span>{item.author}</span>
               </div>
             </Link>)
           })
         }
-      </Col>
+      </div>
       <Modal
           title="发布问题"
           visible={this.state.showQueryModal}

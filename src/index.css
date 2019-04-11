@@ -6,25 +6,20 @@
 
 .body main {
   flex: 1;
+  background: #eee;
 }
 
 .body footer {
   line-height: 40px;
   height: 40px;
   text-align: center;
-  background: #1890ff;
+  color: rgba(255, 255, 255, 0.65);
+  background: #001529;
 }
 
 .logo {
   float: left;
   margin-right: 30px;
-}
-
-.content {
-  text-align: center;
-  overflow: hidden;
-  border: 1px solid #1890ff;
-  border-radius: 5px; 
 }
 
 img.item {

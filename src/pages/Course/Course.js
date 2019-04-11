@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Row, Col, Badge, Switch, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import { ipfsPrefix, web3, courseList, getCourseByAddress } from '../../config';
+import './style.css';
 class Course extends React.Component {
   constructor(props) {
     super(props);
@@ -63,7 +64,6 @@ class Course extends React.Component {
   }
 
   handleImgOnLoad = () => {
-    console.log('fuck');
     this.setState({
       showLoading: "none"
     });
@@ -71,8 +71,8 @@ class Course extends React.Component {
 
   render() {
     return <div>
-      <Row style={{margin: "30px"}} gutter={16}>
-        <Col span={20}>
+      <div>
+        <div>
           <Switch 
             onChange={this.onChangeSwitch} 
             checkedChildren="全部" 
@@ -80,9 +80,9 @@ class Course extends React.Component {
             defaultChecked
             style={{margin: "20px"}}
           ></Switch>
-        </Col>
+        </div>
         {
-          this.state.detailList.map((item, i) => {
+          this.state.detailList.map((item, index) => {
             let [name, content, price, fundingPrice, target, img, video,  isOnline, count, role] = Object.values(item);
             if (!this.state.showAll && !isOnline) {
               return null;
@@ -91,12 +91,11 @@ class Course extends React.Component {
             target = web3.utils.fromWei(target.toString());
             fundingPrice = web3.utils.fromWei(fundingPrice.toString());
             price = web3.utils.fromWei(price.toString());
-            const address = this.state.addressList[i];
+            const address = this.state.addressList[index];
 
-            console.log(typeof target, fundingPrice);
             return (
-              <Col key={img} span={6} style={{padding: "10px"}}>
-                <div className="content">
+              <Col key={`${img}${index}`} span={6} style={{padding: "10px"}}>
+                <div className="course-content">
                   <div style={{ margin: "10px" }}>
                     <span style={{ margin: "10px" }}>{name}</span>
                     <span>
@@ -129,7 +128,7 @@ class Course extends React.Component {
                       
                       {
                         this.state.isCeo ? 
-                          <Button type="danger" style={{margin: "5px"}} onClick={() => this.removeCourse(i)}>删除课程</Button> : null
+                          <Button type="danger" style={{margin: "5px"}} onClick={() => this.removeCourse(index)}>删除课程</Button> : null
                       }
 
                   </div>                  
@@ -138,7 +137,7 @@ class Course extends React.Component {
             );
           })
         }
-      </Row>
+      </div>
     </div>
   }
 }

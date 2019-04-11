@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './style.css';
-import { Button, Modal, Input } from 'antd';
+import { Button, Modal, Input, Icon } from 'antd';
 import { web3, courseList, saveJsonToIpfs } from '../../config';
 
 class Discuss extends Component {
@@ -36,9 +36,11 @@ class Discuss extends Component {
     await courseList.methods.updateQa(this.state.ansIndex, hash1, hash2).send({
       from: this.state.account,
       gas: 5000000
+    }, () => {
+      window.history.go(0);
+      // this.init();
+      // this.handleReplyCancel(); 
     });
-    this.init();
-    this.handleReplyCancel();
   }
   handleReplyCancel = () => {
     this.setState({
@@ -79,8 +81,12 @@ class Discuss extends Component {
     return (
       <div>
         <div className="discuss-header">
-          <h1>{this.state.question.title}</h1>
+          <h1>
+            <Icon type="question-circle" style={{marginRight: "6px"}} />
+            {this.state.question.title}
+          </h1>
           <p>{this.state.question.content}</p>
+          <span>{this.state.question.author}</span>
         </div>
 
         <div>

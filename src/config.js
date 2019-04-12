@@ -58,13 +58,11 @@ async function getJsonFromIpfs(v1, v2) {
 (async function deploy() {
   accounts = await web3.eth.getAccounts();
   console.log("accounts", accounts);
-  // courseList = await new web3.eth.Contract(Imooc.CourseList.abi, accounts[0]);
+  courseList = await new web3.eth.Contract(Imooc.CourseList.abi, accounts[0]);
 
   // 如果部署到了infura, 那这个address就是部署成功时返回的address, 直接获取，不用部署了
 
-  // await result = 0xff7e5cad0c504b85ad6fcbf9d35bf0d5fb5f1c8d
-
-  courseList = await new web3.eth.Contract(Imooc.CourseList.abi, address); // 这里不能用自己的abi？
+  courseList = await new web3.eth.Contract(Imooc.CourseList.abi, address); 
 
   // const result = await courseList.deploy({
   //   data: Imooc.CourseList.evm.bytecode.object
@@ -81,7 +79,6 @@ async function getJsonFromIpfs(v1, v2) {
   // const res = await courseList.methods.getDetail().call({
   //   from: accounts[0]
   // });  
-  // console.log('合约部署成功', courseList.options.address);
 })();
 
 async function getCourseByAddress(address) {

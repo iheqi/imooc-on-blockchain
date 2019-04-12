@@ -25,7 +25,29 @@ contract CourseList {
                 price, 
                 fundingPrice, 
                 target, 
-                img
+                img,
+                true // 是否众筹
+            ));
+        courses.push(newCourse);
+    }
+
+    function createOnlineCourse(
+        string memory name,
+        string memory content,
+        uint price,
+        string memory img
+    ) public returns (address) {
+        address newCourse = address(
+            new Course(
+                ceo,
+                msg.sender,
+                name, 
+                content, 
+                price, 
+                0, // 对于直接上线的课程，fundingPrice和target为0
+                0, 
+                img,
+                false
             ));
         courses.push(newCourse);
     }
@@ -100,7 +122,8 @@ contract Course {
         uint _price,
         uint _fundingPrice,
         uint _target,
-        string memory _img
+        string memory _img,
+        bool isFunding
     ) public {
         ceo = _ceo;
         owner = _owner;
@@ -111,8 +134,13 @@ contract Course {
         target = _target;
         img = _img;
         video = "";
-        isOnline = false;
         count = 0; 
+
+        if (isFunding) {
+            isOnline = false;
+        } else {
+            isOnline = true;
+        }
     }
 
     function addVideo(string memory _video) public {

@@ -97,7 +97,7 @@ class Course extends React.Component {
               <Col key={`${img}${index}`} span={6} style={{padding: "10px"}}>
                 <div className="course-content">
                   <div style={{ margin: "10px" }}>
-                    <span style={{ margin: "10px" }}>{name}</span>
+                    <p className="course-name" style={{ margin: "10px" }}>{name}</p>
                     <span>
                       {
                         isOnline ? <Badge count="已上线" style={{background: "#52c41a"}}></Badge>

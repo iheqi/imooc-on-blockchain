@@ -1,8 +1,7 @@
 import React from 'react';
 import { web3, getCourseByAddress, saveImageToIpfs, ipfsPrefix  } from '../../config';
-import { Button, Badge, Form, Row, Col, Upload } from 'antd';
-import FormItem from 'antd/lib/form/FormItem';
-
+import { Button, Badge, Row, Col, Upload, Icon } from 'antd';
+import './style.css';
 class Detail extends React.Component {
   constructor(props) {
     super(props);
@@ -65,56 +64,70 @@ class Detail extends React.Component {
     });
   }
   render() {
-    const formItemLayout = {
-      labelCol: {
-        span: 6
-      },
-      wrapperCol: {
-        span: 10
-      }
-    };
-    return <Row type="flex" justify="center" style={{marginTop: "30px"}}>
+    return <Row type="flex" justify="center" style={{marginTop: "30px"}} className="detail">
       <Col span={20}>
-        <Form>
-          <FormItem {...formItemLayout} label="课程名">{this.state.name}</FormItem>
-          <FormItem {...formItemLayout} label="课程简介">{this.state.content}</FormItem>
-          <FormItem {...formItemLayout} label="众筹目标">{this.state.target} ETH</FormItem>
-          <FormItem {...formItemLayout} label="众筹价格">{this.state.fundingPrice} ETH</FormItem>
-          <FormItem {...formItemLayout} label="上线价格">{this.state.price} ETH</FormItem>
-          <FormItem {...formItemLayout} label="支持人数">{this.state.count}</FormItem>
-          <FormItem {...formItemLayout} label="状态">
-            { this.state.isOnline ? <Badge count="已上线"></Badge> : <Badge count="众筹中"></Badge> }
-          </FormItem>
-          <FormItem {...formItemLayout} label="身份">
-            {
-              this.state.role === "0" && 
-              <Upload beforeUpload={this.handleUpload} showUploadList={false}>
-                <Button>上传视频</Button>
-              </Upload>
-            }
-            {
-              this.state.role === "1" && "已购买"
-            }
-            {
-              this.state.role === "2" && "学员"
-            }                        
-          </FormItem>
+          <h1 style={{textAlign: "center"}}>{this.state.name}</h1>
+          <p style={{textAlign: "center"}}>{this.state.content}</p>
 
-          <FormItem {...formItemLayout} label="视频状态">
+          <div className="wrapper">
+
+            <span className="target"> { this.state.isOnline ? this.state.price : this.state.fundingPrice } ETH </span>
+            <ul className="info-bar">
+              <li>
+                <span>众筹价格</span>
+                <span className="nodistance"> {this.state.fundingPrice} ETH</span>
+              </li>
+              <span> | </span>
+              <li>
+                <span>上线价格</span>
+                <span className="nodistance"> {this.state.price} ETH </span>
+              </li>
+              <span> | </span>
+              <li>
+                <span>学习人数</span>
+                <span className="nodistance"> {this.state.count} </span>
+              </li>
+ 
+              <span className="buy-button">
+                {
+                  (this.state.role === '2') ? (
+                    <span onClick={this.buyCourse}>
+                      立即购买
+                    </span>
+                  ) : "已拥有"
+                }
+              </span>
+            </ul>
+            <ul className="info-bar">
+              <li>
+                <span>状态</span>
+                { this.state.isOnline ? <Badge count="已上线" style={{background: "#52c41a"}}></Badge> : <Badge count="众筹中"></Badge> }
+              </li>
+              <li>
+                <span>你的身份</span>
+                  {
+                  this.state.role === "0" && 
+                    <Upload beforeUpload={this.handleUpload} showUploadList={false}>
+                      <Button>上传视频</Button>
+                    </Upload>
+                  }
+                  {
+                    this.state.role === "1" && "已购买学员"
+                  }
+                  {
+                    this.state.role === "2" && "未购买学员"
+                  } 
+              </li>              
+            </ul>
+          </div>
+
+          <div className="video">
             {this.state.video ? (
-              this.state.role === "2" ? "已上传" : <video controls width="300px" src={`${ipfsPrefix}${this.state.video}`}></video>
-            ) : "等待视频上传" }
-          </FormItem>
-          <FormItem {...formItemLayout} label="购买状态">
-            {
-              (this.state.role === '2') ? (
-                <Button onClick={this.buyCourse}>
-                  支持 { this.state.isOnline ? this.state.price : this.state.fundingPrice }
-                </Button>
-              ) : "你是ceo或者讲师，无需购买"
-            }
-          </FormItem>
-        </Form>
+              this.state.role === "2" ? 
+                <span><Icon type="play-circle" />讲师已上传视频，请购买后观看</span> 
+                  : <video controls width="300px" src={`${ipfsPrefix}${this.state.video}`}></video>
+            ) : <span><Icon type="play-circle" />等待讲师上传视频</span> }
+          </div>
       </Col>
     </Row>
   }

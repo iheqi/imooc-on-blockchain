@@ -3,7 +3,7 @@ pragma solidity ^0.5.0;
 contract CourseList {
     address payable public ceo;
     address[] public courses;
-    bytes23[] public questions; // 每两个为一个问题的内容
+    bytes32[] public questions; // 每两个为一个问题的内容
     constructor() public {
         ceo = msg.sender;
     }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Row, Col, Badge, Switch, Icon } from 'antd';
+import { Button, Col, Badge, Switch, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import { ipfsPrefix, web3, courseList, getCourseByAddress } from '../../config';
 import './style.css';

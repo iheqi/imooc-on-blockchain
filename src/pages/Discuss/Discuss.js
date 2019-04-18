@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './style.css';
 import { Button, Modal, Input, Icon } from 'antd';
-import { web3, courseList, saveJsonToIpfs } from '../../config';
+import { web3, imooc, saveJsonToIpfs } from '../../config';
 
 class Discuss extends Component {
   constructor(props) {
@@ -38,7 +38,7 @@ class Discuss extends Component {
     const hash1 = web3.utils.asciiToHex(hash.slice(0, 23), 23);
     const hash2 = web3.utils.asciiToHex(hash.slice(23), 23);
     console.log(hash);
-    await courseList.methods.updateQa(this.state.ansIndex, hash1, hash2).send({
+    await imooc.methods.updateQa(this.state.ansIndex, hash1, hash2).send({
       from: this.state.account,
       gas: 5000000
     }, () => {
@@ -69,12 +69,12 @@ class Discuss extends Component {
 
   removeQa = async () => {
     console.log(this.state.account);
-    const isCeo = await courseList.methods.isCeo().call({
+    const isAdmin = await imooc.methods.isAdmin().call({
       from: this.state.account
     });
 
-    if (isCeo) {
-      await courseList.methods.removeQa(this.state.ansIndex).send({
+    if (isAdmin) {
+      await imooc.methods.removeQa(this.state.ansIndex).send({
         from: this.state.account,
         gas: 5000000
       });

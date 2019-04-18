@@ -1,11 +1,11 @@
 pragma solidity ^0.5.0;
 
-contract CourseList {
-    address payable public ceo;
+contract Imooc {
+    address payable public admin;
     address[] public courses;
-    bytes32[] public questions; // 每两个为一个问题的内容
+    bytes23[] public questions; // 每两个为一个问题的内容
     constructor() public {
-        ceo = msg.sender;
+        admin = msg.sender;
     }
 
     function createCourse(
@@ -18,7 +18,7 @@ contract CourseList {
     ) public returns (address) {
         address newCourse = address(
             new Course(
-                ceo,
+                admin,
                 msg.sender,
                 name, 
                 content, 
@@ -39,7 +39,7 @@ contract CourseList {
     ) public returns (address) {
         address newCourse = address(
             new Course(
-                ceo,
+                admin,
                 msg.sender,
                 name, 
                 content, 
@@ -57,7 +57,7 @@ contract CourseList {
     }
 
     function removeCourse(uint _index) public {
-        require(msg.sender == ceo, "必须是ceo才能删除!");
+        require(msg.sender == admin, "必须是admin才能删除!");
         require(_index < courses.length && _index >= 0, "要删除的课程不存在!");
         delete courses[_index];
 
@@ -69,8 +69,8 @@ contract CourseList {
         courses.length--;
     }
 
-    function isCeo() public view returns (bool) {
-        return msg.sender == ceo;
+    function isAdmin() public view returns (bool) {
+        return msg.sender == admin;
     }
 
     function createQa(bytes23 hash1, bytes23 hash2) public {
@@ -101,7 +101,7 @@ contract CourseList {
 }
 
 contract Course {
-    address payable public ceo;
+    address payable public admin;
     address payable public owner;
     string public name;
     string public content;
@@ -114,8 +114,10 @@ contract Course {
     uint public count; 
     mapping (address => uint) public users;
 
+    uint public fundingEnd;
+
     constructor(
-        address payable _ceo,
+        address payable _admin,
         address payable _owner, 
         string memory _name, 
         string memory _content, 
@@ -125,7 +127,7 @@ contract Course {
         string memory _img,
         bool isFunding
     ) public {
-        ceo = _ceo;
+        admin = _admin;
         owner = _owner;
         name = _name;
         content = _content;
@@ -135,6 +137,8 @@ contract Course {
         img = _img;
         video = "";
         count = 0; 
+
+        fundingEnd = now + 30 * 24 * 60 * 60;
 
         if (isFunding) {
             isOnline = false;
@@ -150,7 +154,7 @@ contract Course {
     }
 
     function buy() public payable {
-        require(users[msg.sender] == 0, "不可重复购买");
+        require(users[msg.sender] == 0, "不可重复购买"); // 映射中不存在的键，对应的值为0
 
         if (isOnline) {
             require(msg.value == price, "上线后必须以上线价格购买");
@@ -164,7 +168,7 @@ contract Course {
         if (target <= fundingPrice * count) {
             if (isOnline) {
                 uint value = msg.value;
-                ceo.transfer(value / 10);
+                admin.transfer(value / 10);
                 owner.transfer(value - (value / 10));
             } else { // 还没上线，第一次超出
                 isOnline = true;
@@ -192,5 +196,16 @@ contract Course {
             count,  
             role
         );
+    }
+
+    function withdrew() public returns (bool) {
+        if (now > fundingEnd) {
+            if (users[msg.sender] != 0) {
+                msg.sender.transfer(users[msg.sender]);
+                users[msg.sender] = 0;
+                return true;
+            }
+        }
+        return false;
     }
 }

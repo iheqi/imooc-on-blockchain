@@ -2,7 +2,6 @@ import React from 'react';
 import { web3, getCourseByAddress, saveImageToIpfs, ipfsPrefix, saveVideoToIpfs } from '../../config';
 import { Button, Badge, Row, Col, Upload, Icon } from 'antd';
 import crypto from '../../crypto.js';
-import axios from 'axios';
 import './style.css';
 class Detail extends React.Component {
   constructor(props) {
@@ -24,9 +23,6 @@ class Detail extends React.Component {
     });
     let [name, content, price, fundingPrice, target, img, video,  isOnline, count, role] = Object.values(res);
 
-    console.log({
-      name, content, price, fundingPrice, target, img, video,  isOnline, count, role
-    });
     this.setState({
       account,
       name,
@@ -40,7 +36,21 @@ class Detail extends React.Component {
       fundingPrice: web3.utils.fromWei(fundingPrice.toString()),
       price: web3.utils.fromWei(price.toString())
     });
-    this.videoPlay();
+    
+    if (this.state.video && this.state.role !== '2') {
+      this.videoPlay();
+    }
+  }
+
+  withdrew = async () => {
+    const res = await this.state.course.methods.withdrew().send({
+      from: this.state.account,
+      gas: 5000000
+    }, () => {
+      this.init();
+    });
+    
+    console.log("没有返回？？", res);
   }
 
   videoPlay = () => {
@@ -49,9 +59,10 @@ class Detail extends React.Component {
 
     // // var assetURL = "http://nickdesaulniers.github.io/netfix/demo/frag_bunny.mp4";
     var video =  this.refs.video;
+    
     var mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
     if ('MediaSource' in window && MediaSource.isTypeSupported(mimeCodec)) {
-      var mediaSource = new MediaSource;
+      var mediaSource = new MediaSource();
       //console.log(mediaSource.readyState); // closed
       video.src = URL.createObjectURL(mediaSource);
       mediaSource.addEventListener('sourceopen', sourceOpen);
@@ -96,7 +107,7 @@ class Detail extends React.Component {
 
     function fetchAB (url, cb) {
       console.log(url);
-      var xhr = new XMLHttpRequest;
+      var xhr = new XMLHttpRequest();
       xhr.open('get', url);
       xhr.responseType = 'arraybuffer';
       xhr.onload = function () {
@@ -104,74 +115,6 @@ class Detail extends React.Component {
       };
       xhr.send();
     };
-
-
-    // var video =  this.refs.video;
-    // // var videoUrl = `${ipfsPrefix}${this.state.video}`;
-    // var videoUrl = "http://nickdesaulniers.github.io/netfix/demo/frag_bunny.mp4";
-    // // axios.get(videoUrl).then((res) => {
-    // //   console.log(res);
-    // //   console.log(crypto.decrypt(res.data));
-    // // });
-
-    // var mediaSource = new MediaSource();
-    // video.src = URL.createObjectURL(mediaSource);
-
-    // console.log(video)
-
-    // mediaSource.addEventListener('sourceopen', sourceOpen); // video.src赋值之后触发
-
-
-    // function sourceOpen(e) {
-      // console.log(e.target.readyState);
-      // // URL.revokeObjectURL(video.src);
-      
-      // var mime = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'; 
-      // var mediaSource = e.target;
-      // var sourceBuffer = mediaSource.addSourceBuffer(mime); // 创建一个带有给定MIME类型的新的 SourceBuffer 并添加到 MediaSource 的 SourceBuffers 列表。
-
-      // axios.get(videoUrl).then((res) => {
-      //   console.log(res);
-      //   console.log(Buffer.from(res.data));
-      //   // console.log(Buffer.from(crypto.decrypt(res.data)));
-
-      //   sourceBuffer.addEventListener('updateend', (e) => {
-      //     console.log("updat", sourceBuffer.updating, mediaSource);
-
-      //       if (!sourceBuffer.updating && mediaSource.readyState === 'open') {
-      //           console.log("updateend fuck");
-      //           mediaSource.endOfStream();
-      //           video.play();
-      //       }
-      //   });
-      //   // sourceBuffer.appendBuffer(crypto.decrypt(res.data));
-      //   sourceBuffer.appendBuffer(Buffer.from(res.data));
-        
-      // });
-
-
-
-    //   fetch(videoUrl).then((response) => {
-    //     console.log(mediaSource.readyState);
-    //     return response.arrayBuffer();
-    //   })
-    //   .then((arrayBuffer) => {
-    //     console.log(arrayBuffer);
-    //     console.log(mediaSource.readyState);
-
-    //     sourceBuffer.addEventListener('updateend', (e) => {
-    //         console.log("updat", sourceBuffer.updating,mediaSource.readyState);
-
-    //         if (!sourceBuffer.updating) {
-    //             console.log("updateend fuck");
-    //             video.play();
-    //         }
-    //     });
-    //     sourceBuffer.appendBuffer(arrayBuffer);
-    //     console.log(mediaSource.readyState);
-
-    //   });
-    // }
   }
 
 
@@ -206,7 +149,6 @@ class Detail extends React.Component {
   render() {
     return <Row type="flex" justify="center" style={{marginTop: "30px"}} className="detail">
       <Col span={20}>
-    <Button onClick={this.videoPlay}>video</Button>
 
           <h1 style={{textAlign: "center"}}>{this.state.name}</h1>
           <p style={{textAlign: "center"}}>{this.state.content}</p>
@@ -267,9 +209,11 @@ class Detail extends React.Component {
             {this.state.video ? (
               this.state.role === "2" ? 
                 <span><Icon type="play-circle" />讲师已上传视频，请购买后观看</span> 
-                  : <video ref="video" controls src={`${ipfsPrefix}${this.state.video}`}></video>
+                  : <video ref="video" controls></video> // 讲师已上传视频，并且有权限观看才展示
             ) : <span><Icon type="play-circle" />等待讲师上传视频</span> }
           </div>
+
+          {/* <Button onClick={this.withdrew}>退出众筹</Button> */}
       </Col>
     </Row>
   }

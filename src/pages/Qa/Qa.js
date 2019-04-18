@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Form, Row, message, Input, Button, Modal, Icon } from 'antd';
-import { web3, courseList, saveJsonToIpfs, getJsonFromIpfs } from '../../config';
+import { web3, imooc, saveJsonToIpfs, getJsonFromIpfs } from '../../config';
 import './style.css';
 
 const FormItem = Form.Item;
@@ -20,7 +20,7 @@ class Qa extends React.Component {
 
   init = async () => {
     let [account] = await web3.eth.getAccounts();
-    const qas = await courseList.methods.getQa().call();
+    const qas = await imooc.methods.getQa().call();
     const res = [];
 
     for (let i = 0; i < qas.length; i += 2) {
@@ -57,7 +57,7 @@ class Qa extends React.Component {
     const hash2 = hash.slice(23);
     console.log(web3.utils.asciiToHex(hash1), web3.utils.asciiToHex(hash2));
     const [account] = await web3.eth.getAccounts();
-    await courseList.methods.createQa(
+    await imooc.methods.createQa(
       web3.utils.asciiToHex(hash1, 23),
       web3.utils.asciiToHex(hash2, 23)
     ).send({

@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { Row, Col, Form, Input, Upload, Button } from 'antd';
 import FormItem from 'antd/lib/form/FormItem';
-import { saveImageToIpfs, ipfsPrefix, web3, courseList } from '../../config';
+import { saveImageToIpfs, ipfsPrefix, web3, imooc } from '../../config';
 import { Tabs } from 'antd';
 
 const TabPane = Tabs.TabPane;
@@ -20,7 +20,6 @@ class Create extends React.Component {
   }
 
   handleSubmit = async (e) => {
-    console.log(this.state);
     e.preventDefault();
     this.props.form.validateFieldsAndScroll(async (err, values) => { // 验证是异步的
       if (err) {
@@ -35,9 +34,9 @@ class Create extends React.Component {
         web3.utils.toWei(this.state.target),
         this.state.img
       ];
-      console.log(arr, courseList.methods.createCourse);
+      console.log(arr, imooc.methods.createCourse);
   
-      await courseList.methods.createCourse(...arr).send({
+      await imooc.methods.createCourse(...arr).send({
         from: accounts[0],
         gas: 5000000
       }, (error, hash) => {
@@ -52,8 +51,7 @@ class Create extends React.Component {
   handleOnlineSubmit = async (e) => {
     console.log(this.state);
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll(async (err, values) => {
-      console.log(!!err);
+    this.props.form.validateFieldsAndScroll(async (err) => {
 
       if (err) {
         return;
@@ -67,7 +65,7 @@ class Create extends React.Component {
       ];
       console.log(arr);
   
-      await courseList.methods.createOnlineCourse(...arr).send({
+      await imooc.methods.createOnlineCourse(...arr).send({
         from: accounts[0],
         gas: 5000000
       }, () => {
@@ -80,6 +78,7 @@ class Create extends React.Component {
   }
 
   handleUpload = async (file) => {
+    console.log(file); 
     const hash = await saveImageToIpfs(file);
     console.log(hash);
     this.setState({
@@ -108,9 +107,9 @@ class Create extends React.Component {
   // }
 
   render() {
-    if (this.state.toHomePage) {
-      return <Redirect to="/"></Redirect>
-    }
+    // if (this.state.toHomePage) {
+    //   return <Redirect to="/"></Redirect>
+    // }
     const { getFieldDecorator } = this.props.form;
     return (
       <Tabs defaultActiveKey="1" onChange={this.handleTabChange}>
@@ -140,7 +139,7 @@ class Create extends React.Component {
                     ],
                     initialValue: this.state.content
                   })(
-                    <Input.TextArea row={6} name="content" onChange={this.onChange}></Input.TextArea>
+                    <Input.TextArea row={10} name="content" onChange={this.onChange}></Input.TextArea>
                   )}                
                 </FormItem>  
                 <FormItem label="课程封面">
@@ -203,7 +202,7 @@ class Create extends React.Component {
                     ],
                     initialValue: this.state.content
                   })(
-                    <Input.TextArea row={6} name="content" onChange={this.onChange}></Input.TextArea>
+                    <Input.TextArea row={10} name="content" onChange={this.onChange}></Input.TextArea>
                   )}                
                 </FormItem>  
                 <FormItem label="课程封面">

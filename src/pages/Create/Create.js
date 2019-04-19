@@ -39,11 +39,19 @@ class Create extends React.Component {
       await imooc.methods.createCourse(...arr).send({
         from: accounts[0],
         gas: 5000000
-      }, (error, hash) => {
+      }, () => {
+        this.state = {
+          name: "", 
+          content: "", 
+          target: "", 
+          fundingPrice: "", 
+          price: "", 
+          img: ""
+        }
         console.log('创建课程成功');
-        this.setState({
-          toHomePage: true
-        });
+        // this.setState({
+        //   toHomePage: true
+        // });
       });
     });
   }

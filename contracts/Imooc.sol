@@ -115,6 +115,7 @@ contract Course {
     mapping (address => uint) public users;
 
     uint public fundingEnd;
+    bytes23[] public comments;
 
     constructor(
         address payable _admin,
@@ -203,9 +204,36 @@ contract Course {
             if (users[msg.sender] != 0) {
                 msg.sender.transfer(users[msg.sender]);
                 users[msg.sender] = 0;
+                count--;
                 return true;
             }
         }
         return false;
+    }
+
+    function createComments(bytes23 hash1, bytes23 hash2) public {
+        comments.push(hash1);
+        comments.push(hash2);
+    }
+
+    function getComments() public view returns (bytes23[] memory)  {
+        return comments;
+    }
+
+    function updateComments(uint index, bytes23 hash1, bytes23 hash2) public {
+        comments[index * 2] = hash1;
+        comments[index * 2 + 1] = hash2;
+    }
+
+    function removeComments(uint index) public {
+        uint len = comments.length;
+
+        for (uint i = index * 2; i < len - 2; i = i + 2) {
+            comments[i] = comments[i+2];
+            comments[i+1] = comments[i+3];
+        }
+        delete comments[len-1];
+        delete comments[len-2];
+        comments.length = comments.length - 2;
     }
 }

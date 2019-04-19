@@ -1,6 +1,6 @@
 import React from 'react';
-import { web3, getCourseByAddress, saveImageToIpfs, ipfsPrefix, saveVideoToIpfs } from '../../config';
-import { Button, Badge, Row, Col, Upload, Icon } from 'antd';
+import { web3, getCourseByAddress, saveJsonToIpfs, getJsonFromIpfs, ipfsPrefix, saveVideoToIpfs } from '../../config';
+import { Button, Badge, Row, Col, Upload, Icon, Rate, Input, message } from 'antd';
 import crypto from '../../crypto.js';
 import './style.css';
 class Detail extends React.Component {
@@ -8,6 +8,9 @@ class Detail extends React.Component {
     super(props);
     this.state = {
       address: this.props.match.params.address ? this.props.match.params.address : '',
+      rate: 5,
+      comment: '',
+      comments: []
     };
     this.init();
   }
@@ -53,6 +56,33 @@ class Detail extends React.Component {
     console.log("没有返回？？", res);
   }
 
+  getComments = async () => {
+    const comments = await this.state.course.methods.getComments().call();
+    const res = [];
+
+    for (let i = 0; i < comments.length; i += 2) {
+      res.push(getJsonFromIpfs(comments[i], comments[i + 1]));
+    }
+    const commentsJSON = await Promise.all(res);
+    this.setState({
+      comments: commentsJSON
+    });
+    console.log(this.state.comments);
+
+  }
+
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
+  handleRateChange = (val) => {
+    this.setState({
+      rate: val
+    });
+  }
+
   videoPlay = () => {
     console.log(this.state.video);
     var assetURL = `${ipfsPrefix}${this.state.video}`;
@@ -87,14 +117,7 @@ class Detail extends React.Component {
             }
             return buf;
         }
-
-        // console.log(JSON.stringify(new Uint8Array(buf)));
-        console.log(crypto.decrypt(buffer.toString()));
-
         const firstBuffer = JSON.parse(crypto.decrypt(buffer.toString()));
-        console.log(firstBuffer);
-
-        console.log(new Uint8Array(firstBuffer.data));
 
         sourceBuffer.addEventListener('updateend', function (_) {
           mediaSource.endOfStream();
@@ -117,7 +140,6 @@ class Detail extends React.Component {
     };
   }
 
-
   buyCourse = async () => {
     const contract = await getCourseByAddress(this.state.address);
     const buyPrice = this.state.isOnline ? this.state.price : this.state.fundingPrice;
@@ -133,7 +155,6 @@ class Detail extends React.Component {
   handleUpload = async (file) => {
     const hash = await saveVideoToIpfs(file);
 
-    console.log('fuck hash', crypto.encrypt(hash));    
     await this.state.course.methods.addVideo(crypto.encrypt(hash)).send({
       from: this.state.account,
       gas: 5000000
@@ -146,6 +167,42 @@ class Detail extends React.Component {
     });
   }
   
+  handleSubmit = async (e) => {
+    e.preventDefault();
+    const date = new Date();
+    const day = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+    const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    const data = {
+      author: `用户${this.state.account.slice(-7)}`,
+      rate: this.state.rate,
+      comment: this.state.comment,
+      day: day,
+      time: time,
+    }
+
+    console.log(data);
+    const hide = message.loading("评价中");
+    const hash = await saveJsonToIpfs(data);
+    const hash1 = hash.slice(0, 23);
+    const hash2 = hash.slice(23);
+    console.log(web3.utils.asciiToHex(hash1), web3.utils.asciiToHex(hash2));
+    const [account] = await web3.eth.getAccounts();
+    await this.state.course.methods.createComments(
+      web3.utils.asciiToHex(hash1, 23),
+      web3.utils.asciiToHex(hash2, 23)
+    ).send({
+      from: account,
+      gas: 5000000
+    }, () => {
+      this.setState({
+        title: '',
+        content: ''
+      });
+      hide();
+      this.init();
+    });
+  }
+
   render() {
     return <Row type="flex" justify="center" style={{marginTop: "30px"}} className="detail">
       <Col span={20}>
@@ -214,6 +271,19 @@ class Detail extends React.Component {
           </div>
 
           {/* <Button onClick={this.withdrew}>退出众筹</Button> */}
+          <Button onClick={this.getComments}>获取评论</Button>
+
+          <div className="evaluate">
+              <div className="evaluate-item">
+                <strong>点击星星进行评分：</strong>
+                <Rate allowHalf defaultValue={this.state.rate} onChange={this.handleRateChange}/>
+              </div>
+
+              <Input.TextArea row={10} name="comment" onChange={this.handleChange}></Input.TextArea>
+              <div style={{marginTop: "10px"}}>
+                <Button onClick={this.handleSubmit}>提交</Button>
+              </div>
+          </div>
       </Col>
     </Row>
   }

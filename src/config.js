@@ -34,13 +34,13 @@ if (window.web3) { // 如果是连接到MetaMask, 则这样连接
 
 
   // imooc = await new web3.eth.Contract(Imooc.Imooc.abi, accounts[0]);
-  // const result = await imooc.deploy({
+  // await imooc.deploy({
   //   data: Imooc.Imooc.evm.bytecode.object
   // }).send({
   //   from: accounts[0],
   //   gas: 5000000
   // }, () => {
-  //   console.log('合约部署到的地址：', imooc, imooc.methods, imooc.address, res);
+  //   console.log('合约部署到的地址：', imooc.options.address);
   // });
 
 

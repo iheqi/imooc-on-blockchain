@@ -43,6 +43,7 @@ class Detail extends React.Component {
     if (this.state.video && this.state.role !== '2') {
       this.videoPlay();
     }
+    this.getComments();
   }
 
   withdrew = async () => {
@@ -271,7 +272,7 @@ class Detail extends React.Component {
           </div>
 
           {/* <Button onClick={this.withdrew}>退出众筹</Button> */}
-          <Button onClick={this.getComments}>获取评论</Button>
+          {/* <Button onClick={this.getComments}>获取评论</Button> */}
 
           <div className="evaluate">
               <div className="evaluate-item">
@@ -283,6 +284,25 @@ class Detail extends React.Component {
               <div style={{marginTop: "10px"}}>
                 <Button onClick={this.handleSubmit}>提交</Button>
               </div>
+          </div>
+
+          <div className="evaluation-list">
+            {
+              this.state.comments.map((item, index) => {
+                return (
+                  <div className="evaluate" key={index}>
+                    <div>
+                      <strong>{item.author} </strong>
+                      <Rate style={{float: "right"}} allowHalf defaultValue={item.rate} disabled />
+                    </div>
+                    <p style={{marginTop: "10px"}}>
+                      {item.comment}
+                      <span className="day"> 发表于 {item.day} {item.time}</span>
+                    </p>
+                  </div>
+                )
+              })
+            }
           </div>
       </Col>
     </Row>

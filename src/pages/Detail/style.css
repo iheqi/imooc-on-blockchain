@@ -99,3 +99,9 @@
 .evaluate .evaluate-item {
   padding: 10px 0 15px;
 }
+
+.day {
+  color: #a599a5;
+  font-size: 12px;
+  float: right;
+}

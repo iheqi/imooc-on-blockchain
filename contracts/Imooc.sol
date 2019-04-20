@@ -11,8 +11,8 @@ contract Imooc {
 
     function addTeacher(string memory teacher) public returns (bool) {
         require(msg.sender == admin, "必须是admin才能添加讲师!");
-        address teacherAddress = address(teacher);
-
+        address teacherAddress = parseAddr(teacher);
+        
         if (isTeacher(teacherAddress) == true) { // 添加的讲师已存在
             return false;
         }
@@ -21,6 +21,18 @@ contract Imooc {
         return true;
     }
 
+    function isTeacher(address teacher) public view returns (bool) {
+        uint len = teachers.length;
+        for (uint i = 0; i < len; i++) { 
+            if (teachers[i] == teacher) {
+                return true;
+            }
+        }
+        return false;
+    }
+    function getTeachers() public view returns (address[] memory) {
+        return teachers;
+    }
     function removeTeacher(uint _index) public {
         require(msg.sender == admin, "必须是admin才能删除讲师!");
         require(_index < teachers.length && _index >= 0, "要删除的讲师不存在!");
@@ -34,15 +46,34 @@ contract Imooc {
         teachers.length--;
     }
 
-    function isTeacher(address teacher) public view returns (bool) {
-        uint len = teachers.length;
-        for (uint i = 0; i < len - 1; i++) { 
-            if (teachers[i] == teacher) {
-                return true;
+    function parseAddr(string memory _a) public pure returns (address _parsedAddress) {
+        bytes memory tmp = bytes(_a);
+        uint160 iaddr = 0;
+        uint160 b1;
+        uint160 b2;
+        for (uint i = 2; i < 2 + 2 * 20; i += 2) {
+            iaddr *= 256;
+            b1 = uint160(uint8(tmp[i]));
+            b2 = uint160(uint8(tmp[i + 1]));
+            if ((b1 >= 97) && (b1 <= 102)) {
+                b1 -= 87;
+            } else if ((b1 >= 65) && (b1 <= 70)) {
+                b1 -= 55;
+            } else if ((b1 >= 48) && (b1 <= 57)) {
+                b1 -= 48;
             }
+            if ((b2 >= 97) && (b2 <= 102)) {
+                b2 -= 87;
+            } else if ((b2 >= 65) && (b2 <= 70)) {
+                b2 -= 55;
+            } else if ((b2 >= 48) && (b2 <= 57)) {
+                b2 -= 48;
+            }
+            iaddr += (b1 * 16 + b2);
         }
-        return false;
+        return address(iaddr);
     }
+
 
     function createCourse(
         string memory name,
@@ -89,10 +120,6 @@ contract Imooc {
                 false
             ));
         courses.push(newCourse);
-    }
-
-    function getTeachers() public view returns (address[] memory) {
-        return teachers;
     }
 
     function getCourses() public view returns (address[] memory) {

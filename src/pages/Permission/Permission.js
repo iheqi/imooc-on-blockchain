@@ -28,7 +28,7 @@ class Course extends React.Component {
 
 
     this.setState({
-      // teachers,
+      teachers,
       isAdmin: isAdmin,
       account: account
     });
@@ -71,8 +71,10 @@ class Course extends React.Component {
             this.state.teachers.length !== 0 ? 
               this.state.teachers.map((item, index) => {
                 return (
-                  <Col key={`${item}${index}`} span={6} style={{padding: "10px"}}>
-                  </Col>
+                  <div key={`${item}${index}`} style={{padding: "10px"}}>
+                    {item}
+                    <Button></Button>
+                  </div>
                 );
               }) :
               <div style={{margin: "20px"}}>网站暂时没有讲师哦~</div>

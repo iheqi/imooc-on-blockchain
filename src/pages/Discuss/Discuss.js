@@ -100,7 +100,7 @@ class Discuss extends Component {
             <span className="count">{this.state.question.answers.length}条回复</span>
             <span>
               <Button onClick={this.showModal} type="primary">回复</Button>
-              <Button onClick={this.removeQa} type="danger">删除帖子</Button>
+              <Button onClick={this.removeQa} type="danger" style={{marginLeft: "10px"}}>删除帖子</Button>
             </span>
           </div>
 

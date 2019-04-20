@@ -1,0 +1,12 @@
+.add {
+  margin: 10px;
+  text-align: center;
+}
+
+.teacher-list {
+  padding: 10px;
+  background: #fff;
+  box-shadow: 0 4px 8px 0 rgba(7,17,27,.1);
+  border-radius: 12px;
+  margin: 0 200px;
+}

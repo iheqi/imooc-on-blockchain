@@ -5,6 +5,8 @@ import Create from './pages/Create/Create';
 import Detail from './pages/Detail/Detail';
 import Qa from './pages/Qa/Qa';
 import Discuss from './pages/Discuss/Discuss';
+import Permission from './pages/Permission/Permission';
+
 import Header from './components/Header';
 import CacheRoute from 'react-router-cache-route';
 class App extends Component {
@@ -19,6 +21,7 @@ class App extends Component {
               <CacheRoute path="/create" exact component={Create}></CacheRoute>
               <CacheRoute path="/detail/:address" exact component={Detail}></CacheRoute>
               <CacheRoute path="/discuss/:id" exact component={Discuss}></CacheRoute>    
+              <CacheRoute path="/permission" exact component={Permission}></CacheRoute>    
           </main>
           <footer>
             慕课 by 何琦

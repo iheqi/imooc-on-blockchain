@@ -26,7 +26,11 @@ class HeadComp extends React.Component {
           </MenuItem>
           <MenuItem key="/create">
             <Link to="/create">创建课程</Link>
-          </MenuItem>                    
+          </MenuItem>   
+
+          <MenuItem key="/permission">
+            <Link to="/permission">权限管理</Link>
+          </MenuItem>                  
         </Menu>
       </Header>
     );

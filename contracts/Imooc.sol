@@ -2,10 +2,46 @@ pragma solidity ^0.5.0;
 
 contract Imooc {
     address payable public admin;
+    address[] public teachers;
     address[] public courses;
     bytes23[] public questions; // 每两个为一个问题的内容
     constructor() public {
         admin = msg.sender;
+    }
+
+    function addTeacher(string memory teacher) public returns (bool) {
+        require(msg.sender == admin, "必须是admin才能添加讲师!");
+        address teacherAddress = address(teacher);
+
+        if (isTeacher(teacherAddress) == true) { // 添加的讲师已存在
+            return false;
+        }
+
+        teachers.push(teacherAddress);
+        return true;
+    }
+
+    function removeTeacher(uint _index) public {
+        require(msg.sender == admin, "必须是admin才能删除讲师!");
+        require(_index < teachers.length && _index >= 0, "要删除的讲师不存在!");
+        delete teachers[_index];
+
+        uint len = teachers.length;
+        for (uint i = _index; i < len - 1; i++) {
+            teachers[i] = teachers[i+1];
+        }
+        delete teachers[len-1];
+        teachers.length--;
+    }
+
+    function isTeacher(address teacher) public view returns (bool) {
+        uint len = teachers.length;
+        for (uint i = 0; i < len - 1; i++) { 
+            if (teachers[i] == teacher) {
+                return true;
+            }
+        }
+        return false;
     }
 
     function createCourse(
@@ -16,6 +52,7 @@ contract Imooc {
         uint target,
         string memory img
     ) public returns (address) {
+        require(isTeacher(msg.sender), "必须是讲师才能创建课程");
         address newCourse = address(
             new Course(
                 admin,
@@ -37,6 +74,8 @@ contract Imooc {
         uint price,
         string memory img
     ) public returns (address) {
+        require(isTeacher(msg.sender), "必须是讲师才能创建课程");
+
         address newCourse = address(
             new Course(
                 admin,
@@ -50,6 +89,10 @@ contract Imooc {
                 false
             ));
         courses.push(newCourse);
+    }
+
+    function getTeachers() public view returns (address[] memory) {
+        return teachers;
     }
 
     function getCourses() public view returns (address[] memory) {
@@ -211,21 +254,21 @@ contract Course {
         return false;
     }
 
-    function createComments(bytes23 hash1, bytes23 hash2) public {
+    function createEvaluate(bytes23 hash1, bytes23 hash2) public {
         comments.push(hash1);
         comments.push(hash2);
     }
 
-    function getComments() public view returns (bytes23[] memory)  {
+    function getEvaluates() public view returns (bytes23[] memory)  {
         return comments;
     }
 
-    function updateComments(uint index, bytes23 hash1, bytes23 hash2) public {
+    function updateEvaluate(uint index, bytes23 hash1, bytes23 hash2) public {
         comments[index * 2] = hash1;
         comments[index * 2 + 1] = hash2;
     }
 
-    function removeComments(uint index) public {
+    function removeEvaluate(uint index) public {
         uint len = comments.length;
 
         for (uint i = index * 2; i < len - 2; i = i + 2) {

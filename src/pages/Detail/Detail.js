@@ -43,10 +43,15 @@ class Detail extends React.Component {
     if (this.state.video && this.state.role !== '2') {
       this.videoPlay();
     }
-    this.getComments();
+    this.getEvaluates();
   }
 
   withdrew = async () => {
+    const fundingEnd = await this.state.course.methods.fundingEnd({
+      from: this.state.account,
+      gas: 5000000
+    });
+    console.log("fundingEnd", fundingEnd);
     const res = await this.state.course.methods.withdrew().send({
       from: this.state.account,
       gas: 5000000
@@ -57,8 +62,8 @@ class Detail extends React.Component {
     console.log("没有返回？？", res);
   }
 
-  getComments = async () => {
-    const comments = await this.state.course.methods.getComments().call();
+  getEvaluates = async () => {
+    const comments = await this.state.course.methods.getEvaluates().call();
     const res = [];
 
     for (let i = 0; i < comments.length; i += 2) {
@@ -272,7 +277,7 @@ class Detail extends React.Component {
           </div>
 
           {/* <Button onClick={this.withdrew}>退出众筹</Button> */}
-          {/* <Button onClick={this.getComments}>获取评论</Button> */}
+          {/* <Button onClick={this.getEvaluates}>获取评论</Button> */}
 
           <div className="evaluate">
               <div className="evaluate-item">

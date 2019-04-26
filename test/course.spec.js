@@ -2,24 +2,23 @@ const path = require('path');
 const assert = require('assert');
 const BigNumber = require('bignumber.js');
 const Web3 = require('web3');
-// const ganache = require('ganache-cli');
 
 const web3 = new Web3('ws://localhost:8545');
 const Imooc = require(path.resolve(__dirname, '../src/compiled/Imooc.json'));
 
 let accounts;
-let courseList; 
+let imooc; 
 let courses;
 
-describe('测试', () => {
+describe('测试驱动开发', () => {
   before(async () => {
-    // accounts[0]: ceo
+    // accounts[0]: admin
     // accounts[1]: 课程创建者
     accounts = await web3.eth.getAccounts();
-    courseList = await new web3.eth.Contract(Imooc.CourseList.abi, accounts[0]);
+    imooc = await new web3.eth.Contract(Imooc.Imooc.abi, accounts[0]);
 
-    await courseList.deploy({
-      data: Imooc.CourseList.evm.bytecode.object
+    await imooc.deploy({
+      data: Imooc.Imooc.evm.bytecode.object
     }).send({
       from: accounts[0],
       gas: 5000000
@@ -28,12 +27,29 @@ describe('测试', () => {
   });
 
   it('合约部署成功', async () => {
-    console.log(courseList.options.address);
-    assert.ok(courseList.options.address);
+    // console.log(imooc.options.address);
+    assert.ok(imooc.options.address);
+  });
+
+  it('是否admin', async () => {
+    const isAdmin1 = await imooc.methods.isAdmin().call({
+      from: accounts[0]
+    });
+    const isAdmin2 = await imooc.methods.isAdmin().call({
+      from: accounts[1]
+    });    
+    // console.log(isAdmin1, isAdmin2);
+  });
+
+  it('添加讲师', async () => {
+    await imooc.methods.addTeacher(accounts[1]).send({
+      from: accounts[0],
+      gas: 5000000
+    });
   });
 
   it('测试添加课程', async () => {
-    await courseList.methods.createCourse(
+    await imooc.methods.createCourse(
       'vue course',
       'vue教程',
       web3.utils.toWei('4'), // 上线价
@@ -45,7 +61,7 @@ describe('测试', () => {
       gas: 5000000
     });
   
-    await courseList.methods.createCourse(
+    await imooc.methods.createCourse(
       'react course',
       'react教程',
       web3.utils.toWei('4'), // 上线价
@@ -57,8 +73,8 @@ describe('测试', () => {
       gas: 5000000
     });
 
-    courses = await courseList.methods.getCourses().call();
-    console.log(courses);
+    courses = await imooc.methods.getCourses().call();
+    // console.log(courses);
   });
 
   it('获取课程的属性', async () => {
@@ -73,32 +89,24 @@ describe('测试', () => {
     let count = await vueCourse.methods.count().call();
     let isOnline = await vueCourse.methods.isOnline().call();
         
-    console.log(name, content, target, fundingPrice, price, img, video, count, isOnline);
+    // console.log(name, content, target, fundingPrice, price, img, video, count, isOnline);
   });
   
   it('删除课程', async () => {
     try {
-      await courseList.methods.removeCourse(0).send({
+      await imooc.methods.removeCourse(0).send({
         from: accounts[0],
         gas: 5000000
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
 
-    courses = await courseList.methods.getCourses().call();
-    console.log(courses);
+    courses = await imooc.methods.getCourses().call();
+    // console.log(courses);
   });
 
-  it('是否ceo', async () => {
-    const isCeo1 = await courseList.methods.isCeo().call({
-      from: accounts[0]
-    });
-    const isCeo2 = await courseList.methods.isCeo().call({
-      from: accounts[1]
-    });    
-    console.log(isCeo1, isCeo2);
-  });
+
 
   it('测试课程购买', async () => {
     const vueCourse = await new web3.eth.Contract(Imooc.Course.abi, courses[0]);
@@ -109,16 +117,16 @@ describe('测试', () => {
     });
 
     const value = await vueCourse.methods.users(accounts[2]).call();
-    console.log(value);
+    // console.log(value);
 
-    const detail1 = await vueCourse.methods.getDetail().call(); // 默认是课程创建者owner调用??
-    console.log(detail1);
+    const detail1 = await vueCourse.methods.getDetail().call(); // 默认是accounts[0]调用
+    // console.log(detail1);
 
     const detail2 = await vueCourse.methods.getDetail().call({from: accounts[2]}); // 购买者
-    console.log(detail2);
+    // console.log(detail2);
 
     const detail3 = await vueCourse.methods.getDetail().call({from: accounts[3]}); // 未购买者
-    console.log(detail3);    
+    // console.log(detail3);    
   });
 
   it('测试上线逻辑', async () => {
@@ -131,7 +139,7 @@ describe('测试', () => {
     });
 
     const newBalance = new BigNumber(await web3.eth.getBalance(accounts[1]));
-    console.log(oldBalance, newBalance);
+    // console.log(oldBalance, newBalance);
   });
   it('未上线不可上传视频', async () => {
     const vueCourse = await new web3.eth.Contract(Imooc.Course.abi, courses[0]);
@@ -142,11 +150,11 @@ describe('测试', () => {
         gas: 5000000
       });
     } catch (error) {
-      console.log(error.name);
+      // console.log(error.name);
     }
 
     const video = await vueCourse.methods.video().call();
-    console.log(video);
+    // console.log(video);
 
   });
   it('达到众筹目标', async () => {
@@ -164,14 +172,14 @@ describe('测试', () => {
     });    
 
     const newBalance = new BigNumber(await web3.eth.getBalance(accounts[1]));
-    console.log(oldBalance, newBalance);   
+    // console.log(oldBalance, newBalance);   
   });
 
   it('上线后必须以上线价格购买，然后分成', async () => {
     const vueCourse = await new web3.eth.Contract(Imooc.Course.abi, courses[0]);
     const oldBalance0 = new BigNumber(await web3.eth.getBalance(accounts[0]));
     const oldBalance1 = new BigNumber(await web3.eth.getBalance(accounts[1]));
-    console.log(oldBalance0, oldBalance1);
+    // console.log(oldBalance0, oldBalance1);
     await vueCourse.methods.buy().send({ 
       from: accounts[6],
       value: web3.utils.toWei('4') // 4
@@ -179,7 +187,7 @@ describe('测试', () => {
 
     const newBalance0 = new BigNumber(await web3.eth.getBalance(accounts[0]));
     const newBalance1 = new BigNumber(await web3.eth.getBalance(accounts[1]));  
-    console.log(newBalance0 - oldBalance0, newBalance1 - oldBalance1);
+    // console.log(newBalance0 - oldBalance0, newBalance1 - oldBalance1);
 
   });
 
@@ -193,10 +201,10 @@ describe('测试', () => {
         gas: 5000000
       });
     } catch (error) {
-      console.log(error.name);
+      // console.log(error.name);
     }
 
     const video = await vueCourse.methods.video().call();
-    console.log(video);
+    // console.log(video);
   });
 });

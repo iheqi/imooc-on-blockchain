@@ -95,8 +95,7 @@ class Course extends React.Component {
                 const address = this.state.addressList[index];
 
                 return (
-                  <Col key={`${img}${index}`} span={6} style={{padding: "10px"}}>
-                    <div className="course-content">
+                    <div className="course-content" key={`${img}${index}`} style={{margin: "10px"}}>
                       <div style={{ margin: "10px" }}>
                         <p className="course-name" style={{ margin: "10px" }}>{name}</p>
                         <span>
@@ -136,7 +135,6 @@ class Course extends React.Component {
 
                       </div>                  
                     </div>
-                  </Col>
                 );
               }) :
               <div style={{margin: "20px"}}>网站暂时没有课程哦~</div>

@@ -89,6 +89,7 @@ class Qa extends React.Component {
       </div>
       <div className="qa-list">
         {
+          this.state.questions.length !== 0 ?
           this.state.questions.map((item, index) => {
             return (
                 
@@ -102,7 +103,8 @@ class Qa extends React.Component {
                 <span className="reply"><Icon type="message" /> {item.answers.length}</span>
               </div>
             </Link>)
-          })
+          }) : 
+          <p>暂时没有人发表问答哦，点击“我要发布”进行发帖吧~</p>
         }
       </div>
       <Modal

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Badge, Icon, Input } from 'antd';
+import { Button, Input } from 'antd';
 import { web3, imooc } from '../../config';
 import "./style.css";
 

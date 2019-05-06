@@ -5,8 +5,20 @@
   box-shadow: 0 3px 6px 0 rgba(0,0,0,.16), 0 0 0 1px rgba(0,0,0,.04);
   background: white;
   padding: 6px 0;
-  max-width: 265px;
+  width: 265px !important;
+  display: inline-block;
 }
+
+@media screen and (max-width: 768px) {
+  .course-list {
+    /* display: flex; */
+    text-align: center;
+  }
+  .course-list .course-content {
+    width: 90% !important;
+  }
+}
+
 
 .course-content .course-name {
   overflow: hidden; 

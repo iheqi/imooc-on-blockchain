@@ -115,7 +115,7 @@ class Qa extends React.Component {
           okText="确定"
           cancelText="取消"
         >
-          <Form style={{marginTop: "20px"}}>
+          <Form style={{marginTop: "10px"}}>
             <FormItem label="标题">
               <Input value={this.state.title} name="title" onChange={this.handleChange}></Input>
             </FormItem>

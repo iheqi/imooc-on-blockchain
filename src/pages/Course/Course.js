@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Col, Badge, Switch, Icon } from 'antd';
+import { Button, Badge, Switch, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import { ipfsPrefix, web3, imooc, getCourseByAddress } from '../../config';
 import './style.css';
@@ -70,17 +70,17 @@ class Course extends React.Component {
   }
 
   render() {
-    return <div>
+    return <div style={{margin: "20px"}}>
         <div>
           <Switch 
             onChange={this.onChangeSwitch} 
             checkedChildren="全部" 
             unCheckedChildren="已上线"
             defaultChecked
-            style={{margin: "20px"}}
+            style={{marginBottom: "20px"}}
           ></Switch>
         </div>
-        <div>
+        <div className="course-list">
           {
             this.state.addressList.length !== 0 ? 
               this.state.detailList.map((item, index) => {

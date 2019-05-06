@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+// import { Redirect } from 'react-router-dom';
 import { Row, Col, Form, Input, Upload, Button } from 'antd';
 import FormItem from 'antd/lib/form/FormItem';
 import { saveImageToIpfs, ipfsPrefix, web3, imooc } from '../../config';

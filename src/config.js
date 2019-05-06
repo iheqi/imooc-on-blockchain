@@ -12,8 +12,6 @@ let ipfs = ipfsClient('localhost', '5002', { protocol: 'http' });
 let ipfsPrefix = "http://localhost:5002/ipfs/";
 let web3, accounts, imooc;
 
-// web3 = new Web3('ws://localhost:7545');
-
 
 if (window.web3) { // 如果是连接到MetaMask, 则这样连接
   web3 = new Web3(window.web3.currentProvider);
@@ -34,21 +32,19 @@ if (window.web3) { // 如果是连接到MetaMask, 则这样连接
 
 
   // imooc = await new web3.eth.Contract(Imooc.Imooc.abi, accounts[0]);
-  // await imooc.deploy({
+  // const res = await imooc.deploy({
   //   data: Imooc.Imooc.evm.bytecode.object
   // }).send({
   //   from: accounts[0],
   //   gas: 5000000
-  // }, () => {
-  //   console.log('合约部署到的地址：', imooc.options.address);
   // });
+  // console.log(res, res.options, res.options.address);
 
 
   // const res = await imooc.methods.isAdmin().call({
   //   from: accounts[0]
   // });
 
-  // console.log(res);
 
   // const res = await imooc.methods.getDetail().call({
   //   from: accounts[0]

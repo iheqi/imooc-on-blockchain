@@ -12,7 +12,7 @@ class Discuss extends Component {
       question: this.props.location.query,
       showReplyModal: false,
       answer: '',
-      ansIndex: this.props.match.params.id
+      questionIndex: this.props.match.params.id
     };
     this.init();
   }
@@ -38,13 +38,13 @@ class Discuss extends Component {
     const hash1 = web3.utils.asciiToHex(hash.slice(0, 23), 23);
     const hash2 = web3.utils.asciiToHex(hash.slice(23), 23);
     console.log(hash);
-    await imooc.methods.updateQa(this.state.ansIndex, hash1, hash2).send({
+    await imooc.methods.updateQa(this.state.questionIndex, hash1, hash2).send({
       from: this.state.account,
       gas: 5000000
     }, () => {
-      window.history.go(0);
+      // window.history.go(0);
       // this.init();
-      // this.handleReplyCancel(); 
+      this.handleReplyCancel(); 
     });
   }
   handleReplyCancel = () => {
@@ -74,7 +74,7 @@ class Discuss extends Component {
     });
 
     if (isAdmin) {
-      await imooc.methods.removeQa(this.state.ansIndex).send({
+      await imooc.methods.removeQa(this.state.questionIndex).send({
         from: this.state.account,
         gas: 5000000
       });

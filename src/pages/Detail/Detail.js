@@ -26,6 +26,7 @@ class Detail extends React.Component {
     });
     let [name, content, price, fundingPrice, target, img, video,  isOnline, count, role] = Object.values(res);
 
+    console.log(account);
     this.setState({
       account,
       name,
@@ -178,6 +179,7 @@ class Detail extends React.Component {
     const date = new Date();
     const day = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
     const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    console.log(this.state, this.state.account);
     const data = {
       author: `用户${this.state.account.slice(-7)}`,
       rate: this.state.rate,

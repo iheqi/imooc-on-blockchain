@@ -195,7 +195,7 @@ class Detail extends React.Component {
     const hash2 = hash.slice(23);
     console.log(web3.utils.asciiToHex(hash1), web3.utils.asciiToHex(hash2));
     const [account] = await web3.eth.getAccounts();
-    await this.state.course.methods.createComments(
+    await this.state.course.methods.createEvaluate(
       web3.utils.asciiToHex(hash1, 23),
       web3.utils.asciiToHex(hash2, 23)
     ).send({
